@@ -150,6 +150,37 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(validatePrint(print), 'lastChild'),
         hardline,
       ]
+    case 'struct':
+      return [
+        // if first node is struct dont wrap line
+        node.previousSibling ? hardline : '',
+        group([
+          'struct',
+          // type_identifier
+          path.call(print, 'children', 1),
+          // struct_body
+          path.call(print, 'children', 2),
+        ]),
+      ]
+
+    case 'struct_body':
+      return [
+        indent([
+          path.call(validatePrint(print), 'firstChild'),
+          join(
+            hardline
+            , Array.from(
+              { length: (node.childCount - 2) / 2 },
+              (_, i) => [
+                path.call(print, 'children', (i * 2) + 1),
+                path.call(print, 'children', (i * 2) + 2),
+              ],
+            ),
+          ),
+        ]),
+        path.call(validatePrint(print), 'lastChild'),
+        hardline,
+      ]
     case 'field':
       return node.text
     case '{':
