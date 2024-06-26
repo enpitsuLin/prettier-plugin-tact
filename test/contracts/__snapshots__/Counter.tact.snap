@@ -18,5 +18,4 @@ contract Counter {
         return self.val;
     }
 
-
 }

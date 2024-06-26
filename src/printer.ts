@@ -6,7 +6,7 @@ const { hardline, join, indent, dedent, group } = doc.builders
 
 let nextNodeShouldBeIgnored = false
 
-const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
+const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
   const node = path.node
 
   if (node.hasError) {
@@ -21,20 +21,30 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
   switch (node.type) {
     case 'source_file':
       return path.map(print, 'children')
+    case 'import':
+      return [
+        'import ',
+        path.call(print, 'children', 1),
+        path.call(print, 'children', 2),
+        hardline,
+        // next node isn't import wrap line
+        node.nextSibling?.type !== 'import' ? hardline : '',
+      ]
     case 'contract':
       if (node.childCount > 0)
         return join(' ', path.map(print, 'children'))
       return node.text
     case 'contract_body':
+
       return indent([
         join(
           hardline,
           Array.from(
             { length: node.childCount - 1 },
-            (_, i) => i,
-          ).map(i => (path.call(print, 'children', i))),
+            (_, i) => (path.call(print, 'children', i)
+            ),
+          ),
         ),
-
         dedent(path.call(validatePrint(print), 'lastChild')),
       ])
     case 'storage_variable':
@@ -58,7 +68,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
         ' ',
         // function body
         path.call(print, 'children', 6),
-        hardline,
       ]
     case 'init_function':
       return join(' ', [
@@ -108,19 +117,22 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
     {
       const isOverwritesUniqueId = node.children
         .some((node: SyntaxNode) => node.type === 'message_value')
-      return group([
-        'message',
-        join(' ', [
-          isOverwritesUniqueId
-            ? [path.call(print, 'children', 1), path.call(print, 'children', 2)]
-            : path.call(print, 'children', 1),
-          path.call(validatePrint(print), 'lastChild'),
+      return [
+        // if first node is message dont wrap line
+        node.previousSibling ? hardline : '',
+        group([
+          'message',
+          join(' ', [
+            isOverwritesUniqueId
+              ? [path.call(print, 'children', 1), path.call(print, 'children', 2)]
+              : path.call(print, 'children', 1),
+            path.call(validatePrint(print), 'lastChild'),
+          ]),
         ]),
         hardline,
-      ])
+      ]
     }
     case 'message_body':
-
       return [
         indent([
           path.call(validatePrint(print), 'firstChild'),
@@ -155,8 +167,8 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
     case '(':
     case ')':
     case 'string':
-    case 'init':
     case 'comment':
+    case 'init':
     case 'identifier':
     case 'override':
     case 'get':
