@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs, { readFile, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -33,12 +32,6 @@ export function run(dirname: string) {
             filepath,
           },
         )
-
-        console.log('code:')
-        console.log(code)
-        console.log('result:')
-        console.log(result)
-
         expect(result).toMatchFileSnapshot(getSnapshotPath(dirname, filename))
       })
     })

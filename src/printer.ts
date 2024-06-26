@@ -2,7 +2,7 @@ import type { AstPath, Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
 
-const { hardline, join, indent, dedent, line, group } = doc.builders
+const { hardline, join, indent, dedent, group } = doc.builders
 
 let nextNodeShouldBeIgnored = false
 
@@ -73,13 +73,15 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
       ])
     case 'receive_function':
       return join(' ', [
-        ['receive',
+        [
+          'receive',
           // (
           path.call(print, 'children', 1),
           // string or parameter
           path.call(print, 'children', 2),
           // )
-          path.call(print, 'children', 3)],
+          path.call(print, 'children', 3),
+        ],
         // function_body
         path.call(print, 'children', 4),
       ])
@@ -107,7 +109,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
       const isOverwritesUniqueId = node.children
         .some((node: SyntaxNode) => node.type === 'message_value')
       return group([
-        hardline,
         'message',
         join(' ', [
           isOverwritesUniqueId
@@ -118,10 +119,31 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
         hardline,
       ])
     }
+    case 'message_body':
+
+      return [
+        indent([
+          path.call(validatePrint(print), 'firstChild'),
+          join(
+            hardline
+            , Array.from(
+              { length: (node.childCount - 2) / 2 },
+              (_, i) => [
+                path.call(print, 'children', (i * 2) + 1),
+                path.call(print, 'children', (i * 2) + 2),
+              ],
+            ),
+          ),
+        ]),
+        path.call(validatePrint(print), 'lastChild'),
+        hardline,
+      ]
+    case 'field':
+      return node.text
     case '{':
-      return [node.text, line]
+      return [node.text, hardline]
     case '}':
-      return [line, node.text]
+      return [hardline, node.text]
     case 'return_statement':
     case 'assignment_statement':
       return [
@@ -142,8 +164,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
       return node.text
     default:
 
-      // eslint-disable-next-line no-console
-      console.log(node, node.text)
+      // console.log(node, node.text)
       return node.text
   }
 }

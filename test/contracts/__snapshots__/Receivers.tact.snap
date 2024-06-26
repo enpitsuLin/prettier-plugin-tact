@@ -1,17 +1,17 @@
-import "@stdlib/deploy";// this message will cause our contract to add an amount to the counter
-message Add {
+import "@stdlib/deploy";// this message will cause our contract to add an amount to the countermessage Add {
     amount: Int as uint32;
 }
-// this message will cause our contract to subtract an amount from the counter
-message Subtract {
+
+// this message will cause our contract to subtract an amount from the countermessage Subtract {
     amount: Int as uint32;
 }
-// this message will cause our contract to do a complex math operation on the counter
-message MultiMath {
+
+// this message will cause our contract to do a complex math operation on the countermessage MultiMath {
     add: Int as uint32;
     subtract: Int as uint32;
     multiply: Int as uint32;
 }
+
 contract Receivers with Deployable {
 
     val: Int as int64;
