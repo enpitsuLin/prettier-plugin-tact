@@ -123,10 +123,16 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
     case '}':
       return [line, node.text]
     case 'return_statement':
+    case 'assignment_statement':
       return [
         node.text,
         ';',
       ]
+    case ';':
+    case ':':
+    case '(':
+    case ')':
+    case 'string':
     case 'init':
     case 'comment':
     case 'identifier':
@@ -136,7 +142,8 @@ const printTact: Printer<SyntaxNode>['print'] = (path, options, print) => {
       return node.text
     default:
 
-      // console.log(node, node.text)
+      // eslint-disable-next-line no-console
+      console.log(node, node.text)
       return node.text
   }
 }
