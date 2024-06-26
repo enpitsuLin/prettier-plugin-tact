@@ -1,7 +1,7 @@
-import fs, { readFile, readFileSync } from 'node:fs'
+import fs from 'node:fs'
 import path from 'node:path'
-import { describe, expect, it } from 'vitest'
 import prettier from 'prettier'
+import { describe, expect, it } from 'vitest'
 import * as tactPlugin from '../src/index'
 
 export function run(dirname: string) {
