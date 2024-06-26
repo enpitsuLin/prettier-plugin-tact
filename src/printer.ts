@@ -156,33 +156,62 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         node.previousSibling ? hardline : '',
         group([
           'struct',
-          // type_identifier
-          path.call(print, 'children', 1),
-          // struct_body
-          path.call(print, 'children', 2),
+          join(' ', [
+            // type_identifier
+            path.call(print, 'children', 1),
+            // struct_body
+            path.call(print, 'children', 2),
+          ]),
         ]),
       ]
 
     case 'struct_body':
+    {
+      const children = Array.from(
+        { length: node.childCount - 2 },
+        (_, i) => node.child(i + 1)!,
+      )
+
+      const result: number[][] = []
+
+      let i = 0
+      let temp
+      do {
+        const child = children.at(i)!
+        if (child.type === 'field') {
+          if (temp)
+            result.push(temp)
+          temp = [i]
+        }
+        else if (temp) {
+          temp?.push(i)
+        }
+      } while (++i < children.length)
+      result.push(temp!)
+
       return [
         indent([
           path.call(validatePrint(print), 'firstChild'),
           join(
-            hardline
-            , Array.from(
-              { length: (node.childCount - 2) / 2 },
-              (_, i) => [
-                path.call(print, 'children', (i * 2) + 1),
-                path.call(print, 'children', (i * 2) + 2),
-              ],
-            ),
+            hardline,
+            result.map(line => line
+              ?.map(i => path
+                .call((path) => {
+                  if (path.node.type === 'comment')
+                    return [' ', print(path)]
+                  return print(path)
+                }, 'children', i + 1))),
           ),
         ]),
         path.call(validatePrint(print), 'lastChild'),
         hardline,
       ]
+    }
     case 'field':
       return node.text
+    case 'comment':
+      // add space between `//` and content for single line comment
+      return node.text.replace(/^\/\/\s?(.+)$/, '// $1')
     case '{':
       return [node.text, hardline]
     case '}':
@@ -198,7 +227,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case '(':
     case ')':
     case 'string':
-    case 'comment':
     case 'init':
     case 'identifier':
     case 'override':

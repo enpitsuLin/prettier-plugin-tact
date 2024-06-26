@@ -7,3 +7,9 @@ struct Line {
     start: Point;
     end: Point;
 }
+
+struct Params {
+    name: String = "Satoshi";  // default value
+    age: Int?;                 // optional field
+    point: Point;              // nested Structs
+}
