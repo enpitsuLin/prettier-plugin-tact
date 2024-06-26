@@ -207,6 +207,9 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         hardline,
       ]
     }
+    case 'message_value':
+    case 'parameter':
+      return path.map(print, 'children')
     case 'field':
       return node.text
     case 'comment':
@@ -227,6 +230,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case '(':
     case ')':
     case 'string':
+    case 'integer':
     case 'init':
     case 'identifier':
     case 'override':
@@ -234,7 +238,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'fun':
       return node.text
     default:
-
       // console.log(node, node.text)
       return node.text
   }
