@@ -8,10 +8,12 @@ contract Counter {
         self.val = 0;
     }
 
+
     // handler for incoming increment messages that change the state
     receive("increment") {
         self.val = (self.val + 1);
     }
+
 
     // read-only getter for querying the counter value
     get fun value(): Int {

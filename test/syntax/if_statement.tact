@@ -1,0 +1,26 @@
+fun if_statement() {
+  if (true) { // consequence, when condition is true
+    dump((2 + 2));
+  }
+  
+  if ((2 + 2) == 4) { // consequence, when condition is true
+    dump(true);
+  } else { // alternative, when condition is false
+    dump(false);
+  }
+
+  // condition
+  // ↓
+  if (2 + 2 == 3) {
+      // consequence, when condition is true
+      dump("3?");
+  //        condition2
+  //        ↓
+  } else if (2 + 2 == 4) {
+      // another consequence, when condition2 is true
+      dump(true);
+  } else {
+      // alternative, when both condition and condition2 are false
+      dump(false);
+  }
+}

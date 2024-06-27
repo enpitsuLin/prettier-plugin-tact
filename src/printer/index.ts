@@ -1,6 +1,7 @@
 import type { AstPath, Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
+import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, dedent, group } = doc.builders
 
@@ -22,20 +23,19 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'source_file':
       return path.map(print, 'children')
     case 'import':
-      return [
+      return group([
         'import ',
         path.call(print, 'children', 1),
         path.call(print, 'children', 2),
         hardline,
         // next node isn't import wrap line
         node.nextSibling?.type !== 'import' ? hardline : '',
-      ]
+      ])
     case 'contract':
       if (node.childCount > 0)
         return join(' ', path.map(print, 'children'))
       return node.text
     case 'contract_body':
-
       return indent([
         join(
           hardline,
@@ -69,6 +69,15 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         // function body
         path.call(print, 'children', 6),
       ]
+    case 'global_function':
+      return [
+        join(' ', [
+          path.call(print, 'children', 0),
+          path.call(print, 'children', 1),
+        ]),
+        path.call(print, 'children', 2),
+        path.call(print, 'children', 3),
+      ]
     case 'init_function':
       return join(' ', [
         // init keyword
@@ -101,18 +110,36 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'type_identifier':
       return [' ', node.text]
     case 'function_body':
-      return [
-        indent([
-          '{',
-          hardline,
-          path.call(print, 'namedChildren', 0),
-          path.call(print, 'namedChildren', 1),
-          dedent(
-            path.call(validatePrint(print), 'lastChild'),
-          ),
-          hardline,
-        ]),
-      ]
+    {
+      if (node.childCount === 0) {
+        // TODO: function_body may be comment or other?
+        return node.text
+      }
+
+      const lines: doc.builders.Doc[][] = []
+
+      for (let i = 1; i < node.children.length - 1; i++) {
+        const n = node.child(i)!
+        const rowIndex = n.startPosition.row
+        const line = lines.at(rowIndex)
+        if (line) {
+          line.push(path.call(print, 'children', i))
+        }
+        else {
+          lines[rowIndex] = [path.call(print, 'children', i)]
+        }
+      }
+
+      return indent([
+        '{',
+        hardline,
+        lines.filter(Boolean),
+        dedent(
+          path.call(validatePrint(print), 'lastChild'),
+        ),
+        hardline,
+      ])
+    }
     case 'message':
     {
       const isOverwritesUniqueId = node.children
@@ -129,7 +156,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
             path.call(validatePrint(print), 'lastChild'),
           ]),
         ]),
-        hardline,
       ]
     }
     case 'message_body':
@@ -137,8 +163,8 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         indent([
           path.call(validatePrint(print), 'firstChild'),
           join(
-            hardline
-            , Array.from(
+            hardline,
+            Array.from(
               { length: (node.childCount - 2) / 2 },
               (_, i) => [
                 path.call(print, 'children', (i * 2) + 1),
@@ -148,12 +174,9 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           ),
         ]),
         path.call(validatePrint(print), 'lastChild'),
-        hardline,
       ]
     case 'struct':
       return [
-        // if first node is struct dont wrap line
-        node.previousSibling ? hardline : '',
         group([
           'struct',
           join(' ', [
@@ -163,6 +186,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
             path.call(print, 'children', 2),
           ]),
         ]),
+        hardline,
       ]
 
     case 'struct_body':
@@ -196,20 +220,55 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
             hardline,
             result.map(line => line
               ?.map(i => path
-                .call((path) => {
-                  if (path.node.type === 'comment')
-                    return [' ', print(path)]
-                  return print(path)
-                }, 'children', i + 1))),
+                .call(print, 'children', i + 1))),
           ),
         ]),
         path.call(validatePrint(print), 'lastChild'),
-        hardline,
       ]
     }
+    case 'if_statement':
+      return group([
+        'if',
+        // `(`
+        ' (',
+        // binary_expression
+        path.call(print, 'children', 2),
+        // `)`
+        ') ',
+        // block_statement
+        path.call(print, 'children', 4),
+        // else_clause?
+        path.call(print, 'children', 5),
+      ])
+    case 'block_statement':
+
+      return [
+        '{ ',
+        join(
+          hardline,
+          Array.from(
+            { length: node.childCount - 2 },
+            (_, i) => node.child(i + 1)?.text !== ';' ? path.call(print, 'children', i + 1) : '',
+          ),
+        ),
+        '}',
+      ]
+    case 'else_clause':
+      return [
+        hardline,
+        'else ',
+        path.call(print, 'children', 1),
+      ]
+    case 'let_statement':
+
+      return path.map(print, 'children')
     case 'message_value':
     case 'parameter':
       return path.map(print, 'children')
+    case 'let':
+      return ['let ']
+    case '=':
+      return [' = ']
     case 'field':
       return node.text
     case 'comment':
@@ -221,10 +280,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       return [hardline, node.text]
     case 'return_statement':
     case 'assignment_statement':
-      return [
-        node.text,
-        ';',
-      ]
     case ';':
     case ':':
     case '(':
@@ -252,5 +307,5 @@ function validatePrint(print: (path: AstPath<SyntaxNode>) => doc.builders.Doc) {
 }
 
 export const printer: Printer<SyntaxNode> = {
-  print: printTact,
+  print: withNullNodeHandler(withPreservedEmptyLines(withNodesSeparator(printTact))),
 }
