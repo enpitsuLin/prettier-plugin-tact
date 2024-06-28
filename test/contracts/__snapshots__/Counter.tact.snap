@@ -1,4 +1,4 @@
-contract Counter  {
+contract Counter {
   // persistent state variable of type Int to hold the counter value
   val: Int as uint32;
   // initialize the state variable when contract is deployed

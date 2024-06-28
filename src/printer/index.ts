@@ -1,7 +1,7 @@
-import type { AstPath, Printer } from 'prettier'
+import type { Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
-import { formatComment, formatField } from './utils'
+import { filterTrusty, formatComment, formatField, validatePrint } from './utils'
 import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, group } = doc.builders
@@ -35,12 +35,14 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       return group([
         'contract ',
         join(' ', [
-          join(' ', [
-            // contract identifier
-            path.call(print, 'namedChildren', 0),
-            // maybe trait_list
-            hasTrait ? path.call(print, 'namedChildren', 1) : '',
-          ]),
+          hasTrait
+            ? join(' ', [
+              // contract identifier
+              path.call(print, 'namedChildren', 0),
+              // maybe trait_list
+              path.call(print, 'namedChildren', 1),
+            ])
+            : path.call(print, 'namedChildren', 0),
           // contract_body
           path.call(validatePrint(print), 'lastNamedChild'),
         ]),
@@ -52,7 +54,113 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         join(', ', path.map(print, 'namedChildren')),
       ])
     case 'contract_body':
+
       return node.text
+    case 'global_function':
+      // console.log(
+      //   node,
+      //   '\n',
+      //   node.text,
+      //   '\n',
+      //   node.namedChildren.map(n => ({ n, text: n.text }))
+      // )
+
+      if (node.namedChildren.some(n => n.type === 'function_attributes')) {
+        return group([
+          path.call(print, 'namedChildren', 0),
+          ' fun ',
+          // function identity
+          path.call(print, 'namedChildren', 1),
+          path.call(print, 'namedChildren', 2),
+          node.namedChild(3)?.type === 'type_identifier'
+            ? join(' ', [
+              ':',
+              path.call(print, 'namedChildren', 3),
+              path.call(print, 'namedChildren', 4),
+            ])
+            : path.call(print, 'namedChildren', 3),
+        ].filter(filterTrusty))
+      }
+
+      return group([
+        'fun ',
+        // function identity
+        path.call(print, 'namedChildren', 0),
+        path.call(print, 'namedChildren', 1),
+        node.namedChild(2)?.type === 'type_identifier'
+          ? join(' ', [
+            ':',
+            path.call(print, 'namedChildren', 2),
+            path.call(print, 'namedChildren', 3),
+          ])
+          : path.call(print, 'namedChildren', 2),
+      ])
+    case 'native_function':
+      if (node.namedChildren.some(n => n.type === 'function_attributes')) {
+        return group([
+          group([
+            '@name(',
+            path.call(print, 'namedChildren', 0),
+            ')',
+            hardline,
+          ]),
+          path.call(print, 'namedChildren', 1),
+          ' native ',
+          // function identity
+          path.call(print, 'namedChildren', 2),
+          path.call(print, 'namedChildren', 3),
+          ...node.namedChild(4)
+            ? [': ', path.call(print, 'namedChildren', 4)]
+            : [],
+          ';',
+        ])
+      }
+
+      return group([
+        group([
+          '@name(',
+          path.call(print, 'namedChildren', 0),
+          ')',
+          hardline,
+        ]),
+        'native ',
+        // function identity
+        path.call(print, 'namedChildren', 1),
+        path.call(print, 'namedChildren', 2),
+        ...node.namedChild(3)
+          ? [': ', path.call(print, 'namedChildren', 3)]
+          : [],
+        ';',
+      ])
+    case 'func_identifier':
+      return node.text
+    case 'function_attributes':
+      return node.text
+    case 'parameter_list':
+      return group([
+        '(',
+        join(', ', path.map(print, 'namedChildren')),
+        ')',
+      ])
+    case 'parameter':
+      return group([
+        path.call(print, 'namedChildren', 0),
+        ': ',
+        path.call(print, 'namedChildren', 1),
+      ])
+    case 'function_body':
+
+      if (node.namedChildCount === 0) {
+        if (node.nextNamedSibling)
+          return [node.text, hardline]
+        return node.text
+      }
+      return group([
+        '{',
+        indent([hardline, path.map(print, 'namedChildren')]),
+        hardline,
+        '}',
+      ])
     case 'message': {
       const isOverwritesUniqueId = node.children
         .some((node: SyntaxNode) => node.type === 'message_value')
@@ -93,13 +201,39 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         '}',
       ])
     case 'struct_body':
-
       if (node.namedChildCount === 0)
         return node.text
       return path.map(print, 'namedChildren')
     case 'field':
-
       return formatField(path, print)
+    case 'if_statement':
+
+      return group([
+        'if (',
+        path.call(print, 'namedChildren', 0),
+        ')',
+        path.call(print, 'namedChildren', 1),
+        ...node.namedChildren.some(n => n.type === 'else_clause')
+          ? [
+              ' else ',
+              path.call(print, 'namedChildren', 2),
+            ]
+          : [],
+      ])
+    case 'else_clause':
+      return path.map(print, 'namedChildren')
+    case 'block_statement':
+      // console.log(node, node.namedChildren)
+      return group([
+        ' {',
+        indent([hardline, path.map(print, 'namedChildren')]),
+        hardline,
+        '}',
+      ])
+    case 'expression_statement':
+      return [node.text, ';']
+    case 'binary_expression':
+      return node.text
     case 'identifier':
     case 'type_identifier':
       return node.text
@@ -108,20 +242,13 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'comment':
       return formatComment(path)
     case 'string':
+    case 'boolean':
       return node.text
     default:
     // console.log(node)
   }
 
   return ''
-}
-
-function validatePrint(print: (path: AstPath<SyntaxNode>) => doc.builders.Doc) {
-  return (path: AstPath<SyntaxNode | null>) => {
-    if (path.node !== null)
-      return print(path as AstPath<SyntaxNode>)
-    return ''
-  }
 }
 
 export const printer: Printer<SyntaxNode> = {

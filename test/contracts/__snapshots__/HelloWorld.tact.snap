@@ -1,1 +1,1 @@
-contract HelloWorld  {   override get fun greeting(): String {        return "hello world";    }}
+contract HelloWorld {   override get fun greeting(): String {        return "hello world";    }}

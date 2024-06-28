@@ -2,12 +2,15 @@ import type { AstPath, Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
 import { doesCommentBelongToNode } from './utils'
+import { bodyComment } from './contants'
 
 // These node should separated with newline
 export const separatedNodes = new Set([
   'if_statement',
   'message',
   'contract',
+  'global_function',
+  'native_function',
 ])
 
 const { hardline } = doc.builders
@@ -27,6 +30,7 @@ export function withNodesSeparator(
       = node.previousNamedSibling
       && (node.previousNamedSibling.type !== 'comment'
       || doesCommentBelongToNode(node.previousNamedSibling))
+      && !bodyComment.has(node.previousNamedSibling.type)
 
     const shouldAppendNewline
       = node.nextNamedSibling

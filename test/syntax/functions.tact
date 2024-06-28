@@ -1,0 +1,77 @@
+fun foo(
+    a: Int, // trailing comma in parameter lists is allowed
+) {}
+ 
+fun bar() {
+    foo(
+        5, // trailing comma in argument lists is allowed too!
+    );
+}
+
+fun baz(){
+    // comment in function_body
+}
+
+fun customPow(a: Int, c: Int): Int {
+  let res: Int = 1;
+  repeat(c) {
+    res *= a;
+  }
+  return res;
+}
+
+trait FilterTrait with Ownable {
+    // Virtual functions can be overridden by users of this trait
+    virtual fun filterMessage(): Bool {
+        return sender() != self.owner;
+    }
+ 
+    abstract fun specialFilter(): Bool;
+}
+ 
+contract Filter with FilterTrait {
+    // Overriding default behavior of the FilterTrait
+    override fun filterMessage(): Bool {
+        return true;
+    }
+ 
+    override fun specialFilter(): Bool {
+        return true;
+    }
+}
+
+extends fun customPow(self: Int, c: Int): Int {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    return res;
+}
+
+extends mutates fun customPow(self: Int, c: Int) {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    self = res;
+}
+
+@name(store_uint)
+native storeUint(s: Builder, value: Int, bits: Int): Builder;
+ 
+@name(load_int)
+extends mutates native loadInt(self: Slice, l: Int): Int;
+
+@name(no_return)
+native doSomeThing();
+
+contract Treasure {
+    // This means that this contract can receive the comment "Increment" and this function would be called for such messages
+    receive("Increment") {
+        self.counter += 1;
+    }
+    
+    get fun counter(): Int {
+        return self.counter;
+    }
+}
