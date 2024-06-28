@@ -39,3 +39,11 @@ message(0x000004) Message9 {
   bar: Slice;
   baz: String;
 }
+
+message Message10 {
+  foo: Int; // comment
+}
+
+message(0x000005) Message11 {
+  foo: Int; //comment
+}
