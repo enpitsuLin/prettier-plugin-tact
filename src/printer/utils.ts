@@ -20,7 +20,7 @@ export function handleFieldTrailing(path: AstPath<SyntaxNode>): doc.builders.Doc
 
 export function formatComment(path: AstPath<SyntaxNode>): doc.builders.Doc {
   const node = path.node
-  if (node.nextNamedSibling?.type && ownlineCommentNode.has(node.nextNamedSibling?.type)) {
+  if (node.nextNamedSibling?.type && ownlineCommentNode.has(node.nextNamedSibling?.type) && node.startPosition.column !== 0) {
     return [' ', node.text, hardline]
   }
   if ((doesCommentBelongToNode(node) && node.nextNamedSibling) || doesCommentOwnline(node)) {

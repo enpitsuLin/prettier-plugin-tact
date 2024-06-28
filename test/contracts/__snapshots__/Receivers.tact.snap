@@ -1,4 +1,5 @@
 import "@stdlib/deploy";
+
 // this message will cause our contract to add an amount to the counter
 message Add {
     amount: Int as uint32;

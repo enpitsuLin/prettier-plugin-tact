@@ -1,7 +1,9 @@
 fun foo(a: Int, // trailing comma in parameter lists is allowed){}
 
 fun bar(){
-
+    foo(
+        5, // trailing comma in argument lists is allowed too!
+    );
 }
 
 fun baz(){

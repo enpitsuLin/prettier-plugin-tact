@@ -1,7 +1,10 @@
 fun comment(){
     // trailing line comment
+
     // line comment
+
     /**
    * multi comment
    */
+
 }

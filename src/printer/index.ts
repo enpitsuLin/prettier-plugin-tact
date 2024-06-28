@@ -28,6 +28,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         'import ',
         path.call(print, 'namedChildren', 0),
         ';',
+        ...node.nextNamedSibling?.type !== 'import' ? [hardline] : [],
       ])
     case 'contract': {
       const hasTrait = node.namedChild(1)?.type === 'trait_list'
