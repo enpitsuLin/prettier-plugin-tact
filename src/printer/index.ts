@@ -412,15 +412,27 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 0),
         '!!',
       ])
-
+    case 'map_type':
+      return group([
+        'map<',
+        path.call(print, 'namedChildren', 0),
+        ', ',
+        path.call(print, 'namedChildren', 0),
+        '>',
+      ])
     case 'self':
     case 'string':
     case 'boolean':
     case 'integer':
     case 'null':
       return node.text
+    case 'unary_expression':
+      return group([
+        '-',
+        path.call(print, 'namedChildren', 0),
+      ])
     default:
-    // console.log(node, node.text, node.parent?.text)
+    // console.log(node, node.text)
     // console.table(node.namedChildren.map(({ type, text }) => ({ type, text })))
   }
 
