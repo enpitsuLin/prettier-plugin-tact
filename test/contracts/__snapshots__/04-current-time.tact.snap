@@ -4,8 +4,7 @@ contract CurrentTime with Deployable {
     deployTime: Int as uint32;
 
     init() {
-        self.deployTime = now();
-        // returns unix time, the number of seconds since the epoch
+        self.deployTime = now();// returns unix time, the number of seconds since the epoch
     }
 
     receive("wait 10s") {

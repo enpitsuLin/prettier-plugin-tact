@@ -13,16 +13,12 @@ contract Addresses with Deployable {
 
     init() {
         // this is the third representation of the same address
-        self.a3 = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
-        // raw (same foundation wallet)
+        self.a3 = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);// raw (same foundation wallet)
 
         // here are a few other important addresses
-        self.a4 = newAddress(0, 0);
-        // the zero address (nobody)
-        self.a5 = myAddress();
-        // address of this contract
-        self.a6 = sender();
-        // address of the deployer (the sender during init())
+        self.a4 = newAddress(0, 0);// the zero address (nobody)
+        self.a5 = myAddress();// address of this contract
+        self.a6 = sender();// address of the deployer (the sender during init())
     }
 
     receive("show all") {
@@ -33,8 +29,7 @@ contract Addresses with Deployable {
 
     receive("show ops") {
         // temporary variable
-        let a: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
-        // bouncable (same foundation wallet)
+        let a: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"); // bouncable (same foundation wallet)
 
         dump(a == self.a1);
         dump(a == self.a2);

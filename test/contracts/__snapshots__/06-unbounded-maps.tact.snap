@@ -18,8 +18,7 @@ contract TokenParent with Deployable {
     init() {
         self.symbol = "SHIB";
         self.totalSupply = 500 * pow(10,9);
-        self.mint(self.totalSupply, sender());
-        // mint the entire total supply to deployer
+        self.mint(self.totalSupply, sender()); // mint the entire total supply to deployer
     }
 
     fun mint(amount: Int, to: Address) {

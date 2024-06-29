@@ -17,8 +17,7 @@ contract Bools with Deployable {
     }
 
     receive("show ops") {
-        let b: Bool = true;
-        // temporary variable
+        let b: Bool = true; // temporary variable
         dump(b);
 
         b = self.b1 && self.b2 || !self.b3;

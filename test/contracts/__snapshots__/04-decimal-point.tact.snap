@@ -17,8 +17,7 @@ contract Interest with Deployable {
     totalEarned: Int as coins = 0;// nano-tons
 
     init() {
-        self.interestPercent = 3250;
-        // 3.25% yearly interest rate in percent-mille
+        self.interestPercent = 3250;// 3.25% yearly interest rate in percent-mille
     }
 
     receive(msg: Deposit) {

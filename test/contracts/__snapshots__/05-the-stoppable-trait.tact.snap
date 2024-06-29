@@ -8,8 +8,7 @@ contract Counter with Deployable, Stoppable {
     val: Int as uint32;
 
     init() {
-        self.owner = sender();
-        // we can initialize owner to any value we want, the deployer in this case
+        self.owner = sender();// we can initialize owner to any value we want, the deployer in this case
         self.stopped = false;
         self.val = 0;
     }

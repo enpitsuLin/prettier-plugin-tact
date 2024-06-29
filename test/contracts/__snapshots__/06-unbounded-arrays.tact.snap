@@ -19,8 +19,7 @@ contract TodoParent with Deployable, Ownable {
     numTodos: Int as uint256 = 0;
 
     init() {
-        self.owner = sender();
-        // set the owner as the deployer
+        self.owner = sender();// set the owner as the deployer
     }
 
     // anybody can add a new todo, not just the owner
@@ -35,8 +34,7 @@ contract TodoParent with Deployable, Ownable {
             code: init.code,                // prepare the initial code when deploying the child contract
             data: init.data
         });
-        self.reply(NewTodoResponse{seqno: self.numTodos}.toCell());
-        // this will return excess gas to sender
+        self.reply(NewTodoResponse{seqno: self.numTodos}.toCell()); // this will return excess gas to sender
     }
 
     // only the owner can mark a todo as completed

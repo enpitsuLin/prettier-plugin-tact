@@ -5,10 +5,8 @@ contract MessageSender with Deployable {
     lastSender: Address;
 
     init() {
-        self.deployer = sender();
-        // sender() of init is who deployed the contract
-        self.lastSender = newAddress(0, 0);
-        // zero address
+        self.deployer = sender();// sender() of init is who deployed the contract
+        self.lastSender = newAddress(0, 0);// zero address
     }
 
     receive("who") {

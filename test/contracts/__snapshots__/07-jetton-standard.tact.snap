@@ -20,16 +20,14 @@ contract SampleJetton with Jetton {
         self.mintable = true;
         self.content = content;
 
-        self.max_supply = max_supply;
-        // Initial Setting for max_supply
+        self.max_supply = max_supply;// Initial Setting for max_supply
     }
 
     receive(msg: Mint) {
         let ctx: Context = context();
         require(ctx.sender == self.owner, "Not Owner");
         require(self.mintable, "Can't Mint Anymore");
-        self.mint(msg.receiver, msg.amount, self.owner);
-        // (to, amount, response_destination)
+        self.mint(msg.receiver, msg.amount, self.owner); // (to, amount, response_destination)
     }
 
     receive("Mint: 100") {
@@ -63,17 +61,13 @@ contract  {
     max_supply: Int;// This is not in the TEP-74 interface
 
     receive(msg: TokenUpdateContent) {
-        self.requireOwner();
-        // Allow changing content only by owner
-        self.content = msg.content;
-        // Update content
+        self.requireOwner(); // Allow changing content only by owner
+        self.content = msg.content;// Update content
     }
 
     receive(msg: TokenBurnNotification) {
-        self.requireWallet(msg.owner);
-        // Check wallet
-        self.totalSupply = self.totalSupply - msg.amount;
-        // Update supply
+        self.requireWallet(msg.owner); // Check wallet
+        self.totalSupply = self.totalSupply - msg.amount;// Update supply
         if (msg.response_destination != null) {// Cashback
             send(SendParameters{
                 to: msg.response_destination!!, 
@@ -92,11 +86,9 @@ contract  {
     // @response_destination The previous owner address
     fun mint(to: Address, amount: Int, response_destination: Address) {
         require(self.totalSupply + amount <= self.max_supply, "The total supply will be overlapping.");
-        self.totalSupply = self.totalSupply + amount;
-        // Update total supply
+        self.totalSupply = self.totalSupply + amount;// Update total supply
 
-        let winit: StateInit = self.getJettonWalletInit(to);
-        // Create message
+        let winit: StateInit = self.getJettonWalletInit(to); // Create message
         send(SendParameters{
             to: contractAddress(winit), 
             value: 0, 
@@ -151,8 +143,7 @@ contract  {
 
     receive(msg: TokenTransfer) {
         // 0xf8a7ea5
-        let ctx: Context = context();
-        // Check sender
+        let ctx: Context = context(); // Check sender
         require(ctx.sender == self.owner, "Invalid sender");
 
         // Gas checks
@@ -235,15 +226,12 @@ contract  {
 
     receive(msg: TokenBurn) {
         let ctx: Context = context();
-        require(ctx.sender == self.owner, "Invalid sender");
-        // Check sender
+        require(ctx.sender == self.owner, "Invalid sender"); // Check sender
 
-        self.balance = self.balance - msg.amount;
-        // Update balance
+        self.balance = self.balance - msg.amount;// Update balance
         require(self.balance >= 0, "Invalid balance");
 
-        let fwdFee: Int = ctx.readForwardFee();
-        // Gas checks
+        let fwdFee: Int = ctx.readForwardFee(); // Gas checks
         require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value - Burn");
 
         // Burn tokens

@@ -11,8 +11,7 @@ contract Strings with Deployable {
 
     init() {
         let i1: Int = ;
-        let i2: Int = 6780000000;
-        // coins = ton("6.78")
+        let i2: Int = 6780000000; // coins = ton("6.78")
 
         self.s3 = i1.toString();
         self.s4 = i1.toFloatString(3);
@@ -36,8 +35,7 @@ contract Strings with Deployable {
     }
 
     receive("show ops") {
-        let s: String = "how are you?";
-        // temporary variable
+        let s: String = "how are you?"; // temporary variable
         dump(s);
 
         /// TODO: https://github.com/tact-lang/tact/issues/24

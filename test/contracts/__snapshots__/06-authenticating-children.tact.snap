@@ -23,8 +23,7 @@ contract TodoChild {
     }
 
     receive(msg: HiFromParent) {
-        require(sender() == self.parent, "Access denied");
-        // only the real parent can get here
+        require(sender() == self.parent, "Access denied"); // only the real parent can get here
 
         dump(self.seqno);
         dump("😃 handling hi from parent");
