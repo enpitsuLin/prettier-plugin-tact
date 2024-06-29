@@ -1,0 +1,31 @@
+import "@stdlib/deploy";
+
+// first contract
+contract Todo1 with Deployable {
+    seqno: Int as uint64;// the code specifies the index (sequence number)
+
+
+    get fun myAddress(): Address {
+        return ;
+    }
+
+    get fun otherAddress(): Address {
+        let init: StateInit = ;
+        return ;
+    }
+}
+
+// second contract
+contract Todo2 with Deployable {
+    seqno: Int as uint64;// the code specifies the index (sequence number)
+
+
+    get fun myAddress(): Address {
+        return ;
+    }
+
+    get fun otherAddress(): Address {
+        let init: StateInit = ;
+        return ;
+    }
+}

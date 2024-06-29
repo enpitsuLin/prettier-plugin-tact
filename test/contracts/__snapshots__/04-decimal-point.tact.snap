@@ -1,0 +1,34 @@
+import "@stdlib/deploy";
+
+
+message Deposit {
+    amount: Int as coins; // nano-tons
+}
+
+message Withdraw {
+    amount: Int as coins; // nano-tons
+}
+
+
+contract Interest with Deployable {
+    interestPercent: Int as int32;depositTime: Int as uint32;// seconds since the epoch
+    depositAmount: Int as coins;// nano-tons
+    totalEarned: Int as coins;// nano-tons
+
+
+    receive(msg: Deposit) {
+        require(self.depositAmount == 0, "No multiple deposits");self.depositTime = ;
+        self.depositAmount = msg.amount;
+    }
+
+    receive(msg: Withdraw) {
+        require(msg.amount >= self.depositAmount, "Cannot withdraw more than deposit");self.depositAmount = self.depositAmount - msg.amount;
+        let durationSeconds: Int = now() - self.depositTime;
+        let earned: Int = msg.amount * durationSeconds * self.interestPercent / SecondsPerYear / 100000;
+        dump(earned);self.totalEarned = self.totalEarned + earned;
+    }
+
+    get fun total(): Int {
+        return self.totalEarned;// in nano-tons
+    }
+}

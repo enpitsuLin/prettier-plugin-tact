@@ -1,0 +1,15 @@
+import "@stdlib/deploy";
+
+// global constants are calculated in compile-time and can't change
+
+contract Constants with Deployable {
+    // contract constants are calculated in compile-time and can't change
+
+    // if your contract can be in multiple states, constants are an easy alternative to enums
+
+
+    get fun sum(): Int {
+        // you can read the constants anywhere
+        return GlobalConst1 + self.ContractConst1 + self.StatePaid;
+    }
+}

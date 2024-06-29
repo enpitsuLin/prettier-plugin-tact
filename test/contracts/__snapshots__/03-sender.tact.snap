@@ -1,0 +1,20 @@
+import "@stdlib/deploy";
+
+contract MessageSender with Deployable {
+    deployer: Address;lastSender: Address;
+
+    receive("who") {
+        if (sender() == self.deployer) {
+            dump("deployer");
+        } else  {
+            dump("not deployer!");
+        }
+    }
+
+    receive("hello") {
+        if (sender() != self.lastSender) {
+            self.lastSender = ;
+            dump("hello new sender!");
+        }
+    }
+}
