@@ -52,7 +52,8 @@ struct JettonData {
     walletCode: Cell;
 }
 // ============================================================================================================ //
-contract  {
+@interface("org.ton.jetton.master")
+contract Jetton with Ownable {
     totalSupply: Int;// Already set initially
     mintable: Bool;
     owner: Address;
@@ -135,7 +136,8 @@ contract  {
     }
 }
 // ============================================================ //
-contract  {
+@interface("org.ton.jetton.wallet")
+contract JettonDefaultWallet {
 
     balance: Int;
     owner: Address;
