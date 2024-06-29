@@ -54,9 +54,11 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         hardline,
         '}',
       ]
-    case 'storage_variable': {
+    case 'storage_variable':
+    case 'storage_constant': {
       if (node.namedChildren.some(n => n.type === 'tlb_serialization')) {
         return [
+          ...node.type === 'storage_constant' ? ['const '] : [],
           path.call(print, 'namedChildren', 0),
           ': ',
           path.call(print, 'namedChildren', 1),
@@ -73,6 +75,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       }
 
       return [
+        ...node.type === 'storage_constant' ? ['const '] : [],
         path.call(print, 'namedChildren', 0),
         ': ',
         path.call(print, 'namedChildren', 1),
