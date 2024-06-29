@@ -52,7 +52,7 @@ contract Optionals with Deployable {
         if (self.cd != null && (self.cd!!).sa != null) {
             return ;// !! tells the compiler this can't be null
         } else  {
-            return ;
+            return null;
         }
     }
 }

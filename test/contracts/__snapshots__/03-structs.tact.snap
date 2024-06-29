@@ -6,7 +6,7 @@ struct Point {
 }
 struct Params {
     name: String = "Satoshi"; // default value
-    age: Int? = ; // optional field
+    age: Int? = null; // optional field
     point: Point; // nested structs
 }
 

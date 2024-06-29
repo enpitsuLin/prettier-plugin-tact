@@ -34,7 +34,7 @@ contract TodoParent with Deployable {
         let i: Int = 0;
         repeat (3) {
             i = i + 1;
-            let init: StateInit = ;
+            let init: StateInit = initOf TodoChild(i);
             send(SendParameters{
                 to: contractAddress(init),
                 body: HiFromParent{greeting: "darling"}.toCell(),

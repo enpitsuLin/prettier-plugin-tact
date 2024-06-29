@@ -11,7 +11,7 @@ contract Todo1 with Deployable {
     }
 
     get fun otherAddress(): Address {
-        let init: StateInit = ;
+        let init: StateInit = initOf Todo2();
         return contractAddress(init);
     }
 }
@@ -27,7 +27,7 @@ contract Todo2 with Deployable {
     }
 
     get fun otherAddress(): Address {
-        let init: StateInit = ;
+        let init: StateInit = initOf Todo1();
         return contractAddress(init);
     }
 }

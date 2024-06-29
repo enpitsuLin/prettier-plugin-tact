@@ -16,7 +16,7 @@ contract Todo with Deployable {
 
     // this message handler will cause the contract to deploy the second instance
     receive("deploy 2nd") {
-        let init: StateInit = ;
+        let init: StateInit = initOf Todo(2);
         let address: Address = contractAddress(init);
         send(SendParameters{
             to: address,

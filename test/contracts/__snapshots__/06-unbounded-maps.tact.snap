@@ -22,7 +22,7 @@ contract TokenParent with Deployable {
     }
 
     fun mint(amount: Int, to: Address) {
-        let init: StateInit = ;
+        let init: StateInit = initOf TokenChild(myAddress(), to);
         send(SendParameters{
             to: contractAddress(init),
             body: InternalAddTokens{amount: amount, origin: myAddress()}.toCell(),
@@ -38,7 +38,7 @@ contract TokenParent with Deployable {
     }
 
     get fun childAddress(owner: Address): Address {
-        return contractAddress();
+        return contractAddress(initOf TokenChild(myAddress(), owner));
     }
 }
 
@@ -65,7 +65,7 @@ contract TokenChild {
         require(sender() == self.owner, "Access denied");
         require(self.balance >= msg.amount, "Insufficient balance");
         self.balance = self.balance - msg.amount;
-        let init: StateInit = ;
+        let init: StateInit = initOf TokenChild(self.parent, msg.to);
         send(SendParameters{
             to: contractAddress(init),
             body: InternalAddTokens{amount: msg.amount, origin: self.owner}.toCell(),

@@ -26,7 +26,7 @@ contract TodoParent with Deployable {
     // this message handler will cause the contract to deploy another child
     receive("deploy another") {
         self.numChildren = self.numChildren + 1;
-        let init: StateInit = ;
+        let init: StateInit = initOf TodoChild(self.numChildren);
         send(SendParameters{
             to: contractAddress(init),
             value: ton("0.1"),              // pay for message, the deployment and give some TON for storage

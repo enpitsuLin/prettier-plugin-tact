@@ -39,7 +39,7 @@ contract TodoParent with Deployable {
         let i: Int = 0;
         repeat (3) {
             i = i + 1;
-            let init: StateInit = ;
+            let init: StateInit = initOf TodoChild(myAddress(), i);
             send(SendParameters{
                 to: contractAddress(init),
                 body: HiFromParent{ greeting: "darling" }.toCell(),
@@ -52,7 +52,7 @@ contract TodoParent with Deployable {
     }
 
     receive(msg: HiFromChild) {
-        let expectedAddress: Address = contractAddress();
+        let expectedAddress: Address = contractAddress(initOf TodoChild(myAddress(), msg.fromSeqno));
 
         require(sender() == expectedAddress, "Access denied");
         // only the real children can get here

@@ -115,7 +115,7 @@ contract Jetton with Ownable {
     }
 
     virtual fun getJettonWalletInit(address: Address): StateInit {
-        return ;
+        return initOf JettonDefaultWallet(myAddress(), address);
     }
 
     // ====== Get Methods ====== //
@@ -165,7 +165,7 @@ contract JettonDefaultWallet {
         self.balance = self.balance - msg.amount;
         require(self.balance >= 0, "Invalid balance");
 
-        let init: StateInit = ;
+        let init: StateInit = initOf JettonDefaultWallet(self.master, msg.destination);
         let walletAddress: Address = contractAddress(init);
         send(SendParameters{
                 to: walletAddress, 
@@ -191,7 +191,7 @@ contract JettonDefaultWallet {
 
 
         if (ctx.sender != self.master) {
-            let sinit: StateInit = ;
+            let sinit: StateInit = initOf JettonDefaultWallet(self.master, msg.from);
             require(contractAddress(sinit) == ctx.sender, "Invalid sender!");
         }
 

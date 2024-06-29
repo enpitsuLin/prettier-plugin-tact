@@ -11,7 +11,7 @@ contract Todo with Deployable {
 
     // each instance can calculate the address of every other instance
     get fun addressOf(otherSeqno: Int): Address {
-        let init: StateInit = ;
+        let init: StateInit = initOf Todo(otherSeqno);
         return contractAddress(init);
     }
 }

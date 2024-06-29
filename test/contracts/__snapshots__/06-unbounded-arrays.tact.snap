@@ -25,7 +25,7 @@ contract TodoParent with Deployable, Ownable {
     // anybody can add a new todo, not just the owner
     receive(msg: NewTodo) {
         self.numTodos = self.numTodos + 1;
-        let init: StateInit = ;
+        let init: StateInit = initOf TodoChild(myAddress(), self.numTodos);
         send(SendParameters{
             to: contractAddress(init),
             body: InternalSetTask{task: msg.task}.toCell(),
@@ -54,7 +54,7 @@ contract TodoParent with Deployable, Ownable {
     }
 
     get fun todoAddress(seqno: Int): Address {
-        return contractAddress();
+        return contractAddress(initOf TodoChild(myAddress(), seqno));
     }
 }
 
