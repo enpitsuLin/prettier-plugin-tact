@@ -255,7 +255,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 1),
         ...node.namedChildren.some(n => n.type === 'else_clause')
           ? [
-              ' else ',
+              ' else',
               path.call(print, 'namedChildren', 2),
             ]
           : [],
