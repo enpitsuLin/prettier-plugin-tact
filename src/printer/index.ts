@@ -192,7 +192,13 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'return_statement':
       return ['return ', path.map(print, 'namedChildren'), ';']
     case 'field_access_expression':
-      return node.text
+      return group([
+        path.call(print, 'namedChildren', 0),
+        '.',
+        path.call(print, 'namedChildren', 1),
+      ])
+    case 'parenthesized_expression':
+      return ['(', path.map(print, 'namedChildren'), ')']
     case 'message': {
       const isOverwritesUniqueId = node.children
         .some((node: SyntaxNode) => node.type === 'message_value')
@@ -401,15 +407,21 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 0),
         path.call(print, 'namedChildren', 1),
       ])
+    case 'non_null_assert_expression':
+      return group([
+        path.call(print, 'namedChildren', 0),
+        '!!',
+      ])
 
+    case 'self':
     case 'string':
     case 'boolean':
     case 'integer':
     case 'null':
       return node.text
     default:
-      // console.log(node, node.text, node.parent?.text)
-      // console.table(node.namedChildren.map(({ type, text }) => ({ type, text })))
+    // console.log(node, node.text, node.parent?.text)
+    // console.table(node.namedChildren.map(({ type, text }) => ({ type, text })))
   }
 
   return ''
