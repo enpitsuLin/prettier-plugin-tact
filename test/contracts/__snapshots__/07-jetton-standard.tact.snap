@@ -263,7 +263,13 @@ contract  {
         return msgValue;
     }
 
+    bounced(src: bounced<TokenTransferInternal>) {
+        self.balance = self.balance + src.amount;
+    }
 
+    bounced(src: bounced<TokenBurnNotification>) {
+        self.balance = self.balance + src.amount;
+    }
 
     get fun get_wallet_data(): JettonWalletData {
         return JettonWalletData {
