@@ -41,7 +41,7 @@ contract Filter with FilterTrait {
 extends fun customPow(self: Int, c: Int): Int {
     let res: Int = 1;
     repeat (c) {
-        res *= ;
+        res *= self;
     }
     return res;
 }
@@ -49,7 +49,7 @@ extends fun customPow(self: Int, c: Int): Int {
 extends mutates fun customPow(self: Int, c: Int) {
     let res: Int = 1;
     repeat (c) {
-        res *= ;
+        res *= self;
     }
     self = res;
 }

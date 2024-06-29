@@ -79,7 +79,7 @@ contract Maps with Deployable {
             return "not found";
         }
 
-        let item: TokenInfo = ; // !! tells the compiler this can't be null
+        let item: TokenInfo = self.mi1.get(17)!!; // !! tells the compiler this can't be null
         return item.ticker;
     }
 
