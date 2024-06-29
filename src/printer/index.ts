@@ -261,7 +261,10 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           : [],
       ])
     case 'else_clause':
-      return path.map(print, 'namedChildren')
+      return group([
+        ...node.namedChild(0)?.type === 'if_statement' ? [' '] : [],
+        path.call(print, 'namedChildren', 0),
+      ])
     case 'repeat_statement':
       return group([
         'repeat (',
