@@ -111,6 +111,18 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           ? [hardline]
           : [],
       ])
+
+    case 'bounced_function':
+      return group([
+        'bounced(',
+        path.call(print, 'namedChildren', 0),
+        ') ',
+        path.call(print, 'namedChildren', 1),
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
     case 'init_function':
       return group([
         'init',
@@ -136,6 +148,12 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         '(',
         join(', ', path.map(print, 'namedChildren')),
         ')',
+      ])
+    case 'bounced_type':
+      return group([
+        'bounced<',
+        path.call(print, 'namedChildren', 0),
+        '>',
       ])
     case 'parameter':
       return group([
@@ -394,7 +412,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'instance_argument':
       return [node.text, ';']
     default:
-    // console.log(node,node.text)
+    // console.log(node, node.text)
   }
 
   return ''
