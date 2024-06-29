@@ -1,6 +1,5 @@
 import "@stdlib/deploy";
 
-
 message Withdraw {
     amount: Int as coins;
 }

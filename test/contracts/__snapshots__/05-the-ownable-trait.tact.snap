@@ -1,5 +1,6 @@
 // this trait has to be imported
-import "@stdlib/ownable";import "@stdlib/deploy";
+import "@stdlib/ownable";
+import "@stdlib/deploy";
 
 // the Ownable trait can limit certain actions to the owner only
 contract Counter with Deployable, Ownable {

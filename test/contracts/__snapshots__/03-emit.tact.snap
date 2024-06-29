@@ -1,6 +1,5 @@
 import "@stdlib/deploy";
 
-
 message TransferEvent {
     amount: Int as coins;
     recipient: Address;

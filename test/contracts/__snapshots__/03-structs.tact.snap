@@ -9,7 +9,6 @@ struct Params {
     age: Int? = null; // optional field
     point: Point; // nested structs
 }
-
 message Add {
     point: Point; // message can hold a struct
 }

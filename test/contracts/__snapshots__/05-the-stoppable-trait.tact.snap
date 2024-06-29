@@ -1,5 +1,7 @@
 // this trait has to be imported
-import "@stdlib/stoppable";import "@stdlib/ownable";import "@stdlib/deploy";
+import "@stdlib/stoppable";
+import "@stdlib/ownable";
+import "@stdlib/deploy";
 
 // the Stoppable trait allows the owner to stop the contract which can limit certain actions
 contract Counter with Deployable, Stoppable {

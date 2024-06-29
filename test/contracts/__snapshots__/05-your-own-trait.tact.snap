@@ -1,4 +1,5 @@
-import "@stdlib/deploy";import "@stdlib/ownable";
+import "@stdlib/deploy";
+import "@stdlib/ownable";
 
 /////////////////////////////////////////////////////////////////////////////
 // this trait adds basic analytics to any contract to track how popular it is

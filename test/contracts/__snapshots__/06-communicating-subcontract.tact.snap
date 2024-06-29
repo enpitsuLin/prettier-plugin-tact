@@ -1,6 +1,5 @@
 import "@stdlib/deploy";
 
-
 message HiFromParent {
     greeting: String;
 }

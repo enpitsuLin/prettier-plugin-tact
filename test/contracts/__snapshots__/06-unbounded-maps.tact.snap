@@ -4,7 +4,6 @@ struct Metadata {
     symbol: String;
     totalSupply: Int;
 }
-
 message Transfer {
     amount: Int as coins;
     to: Address;
@@ -44,6 +43,7 @@ contract TokenParent with Deployable {
 
 ////////////////////////////////////////////////////////////////////////////
 // child contract - the Transfer message is sent by users directly to a child
+
 message InternalAddTokens {
     amount: Int as coins;
     origin: Address;

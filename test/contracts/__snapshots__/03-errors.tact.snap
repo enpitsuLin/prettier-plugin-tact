@@ -1,6 +1,5 @@
 import "@stdlib/deploy";
 
-
 message Divide {
     by: Int as uint32;
 }

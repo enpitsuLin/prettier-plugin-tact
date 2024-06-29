@@ -1,5 +1,5 @@
-import "@stdlib/deploy";import "@stdlib/ownable";
-
+import "@stdlib/deploy";
+import "@stdlib/ownable";
 
 message NewTodo {
     task: String;
@@ -60,6 +60,7 @@ contract TodoParent with Deployable, Ownable {
 
 ////////////////////////////////////////////////////////////////////////////
 // child contract - internal interface that users shouldn't access directly
+
 message InternalSetTask {
     task: String;
 }

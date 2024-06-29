@@ -1,6 +1,5 @@
 import "@stdlib/deploy";
 
-
 message CounterValue {
     value: Int as uint32;
 }
@@ -31,7 +30,6 @@ contract Counter with Deployable {
         return self.val;
     }
 }
-
 
 message Reach {
     counter: Address;
