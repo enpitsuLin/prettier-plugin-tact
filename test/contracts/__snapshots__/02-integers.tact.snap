@@ -10,7 +10,7 @@ contract Integers with Deployable {
     i5: Int as int128;// range -2^127 to 2^127 - 1 (takes 128 bit = 16 bytes)
     i6: Int as coins;// range 0 to 2^120 - 1 (takes 120 bit = 15 bytes)
     i7: Int as uint64 = 0x1c4a;// range 0 to 18,446,744,073,709,551,615 (takes 64 bit = 8 bytes)
-    i8: Int as int64 = ;// range -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 (takes 64 bit = 8 bytes)
+    i8: Int as int64 = -203;// range -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 (takes 64 bit = 8 bytes)
     i9: Int as uint32 = 0;// range 0 to 4,294,967,295 (takes 32 bit = 4 bytes)
     i10: Int as int32 = 0;// range -2,147,483,648 to 2,147,483,647 (takes 32 bit = 4 bytes)
     i11: Int as uint16 = 0;// range 0 to 65,535 (takes 16 bit = 2 bytes)

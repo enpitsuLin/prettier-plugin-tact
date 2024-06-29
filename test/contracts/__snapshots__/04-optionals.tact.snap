@@ -42,7 +42,7 @@ contract Optionals with Deployable {
 
     get fun optIntVal(): Int {
         if (self.ca == null) {
-            return ;
+            return -1;
         } else  {
             return self.ca!!;// !! tells the compiler this can't be null
         }

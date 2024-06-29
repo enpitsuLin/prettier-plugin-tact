@@ -19,7 +19,7 @@ fun loops() {
     }
      {
         // Empty map
-        let cells:  = emptyMap();
+        let cells: map<Int, Int> = emptyMap();
 
         // Setting four entries
         cells.set(1, beginCell().storeUint(100, 16).endCell());
@@ -39,7 +39,7 @@ fun loops() {
     }
      {
         // Empty map
-        let quartiles:  = emptyMap();
+        let quartiles: map<Int, Int> = emptyMap();
 
         // Setting some entries
         quartiles.set(1, 25);
