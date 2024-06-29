@@ -211,6 +211,56 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       ])
     case 'else_clause':
       return path.map(print, 'namedChildren')
+    case 'repeat_statement':
+      return group([
+        'repeat (',
+        path.call(print, 'namedChildren', 0),
+        ')',
+        path.call(print, 'namedChildren', 1),
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
+    case 'while_statement':
+      return group([
+        'while (',
+        path.call(print, 'namedChildren', 0),
+        ')',
+        path.call(print, 'namedChildren', 1),
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
+    case 'do_until_statement':
+      return group([
+        'do',
+        path.call(print, 'namedChildren', 0),
+        ' until (',
+        path.call(print, 'namedChildren', 1),
+        ');',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
+    case 'foreach_statement':
+      return group([
+        'foreach (',
+        join(', ', [
+          path.call(print, 'namedChildren', 0),
+          path.call(print, 'namedChildren', 1),
+        ]),
+        ' in ',
+        path.call(print, 'namedChildren', 2),
+        ')',
+        path.call(print, 'namedChildren', 3),
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
     case 'block_statement':
       return group([
         ' {',
