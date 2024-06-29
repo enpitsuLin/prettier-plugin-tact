@@ -407,7 +407,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       ])
     case 'unary_expression':
       return group([
-        '-',
+        node.text.at(0)!,
         path.call(print, 'namedChildren', 0),
       ])
     case 'method_call_expression':
