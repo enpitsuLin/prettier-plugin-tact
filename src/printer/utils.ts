@@ -5,10 +5,6 @@ import { bodyComment, ownlineCommentNode } from './contants'
 
 const { hardline, group } = doc.builders
 
-export function filterTrusty<T>(item: false | T | undefined | null): item is NonNullable<T> {
-  return Boolean(item)
-}
-
 export function handleFieldTrailing(path: AstPath<SyntaxNode>): doc.builders.Doc {
   const node = path.node
   if (!node.nextNamedSibling || bodyComment.has(node.nextNamedSibling.type))

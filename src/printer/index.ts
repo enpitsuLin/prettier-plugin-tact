@@ -1,7 +1,7 @@
 import type { Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
-import { filterTrusty, formatComment, formatField, validatePrint } from './utils'
+import { doesCommentBelongToNode, filterTrusty, formatComment, formatField, validatePrint } from './utils'
 import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, group } = doc.builders
@@ -30,6 +30,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         ';',
         ...node.nextNamedSibling?.type !== 'import' ? [hardline] : [],
       ])
+    case 'trait':
     case 'contract': {
       const hasTrait = node.namedChild(1)?.type === 'trait_list'
 
@@ -46,6 +47,11 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
             : path.call(print, 'namedChildren', 0),
           // contract_body
           path.call(validatePrint(print), 'lastNamedChild'),
+
+          ...node.nextNamedSibling
+          && !doesCommentBelongToNode(node.nextNamedSibling)
+            ? [hardline]
+            : [],
         ]),
       ])
     }
@@ -54,18 +60,36 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         'with ',
         join(', ', path.map(print, 'namedChildren')),
       ])
+    case 'trait_body':
     case 'contract_body':
+      return [
+        '{',
+        indent([hardline, path.map(print, 'namedChildren')]),
+        hardline,
+        '}',
+      ]
+    case 'storage_variable':
+      return [
+        path.call(print, 'namedChildren', 0),
+        ': ',
+        path.call(print, 'namedChildren', 1),
+        path.call(print, 'namedChildren', 2),
+        ';',
+      ]
+    case 'receive_function':
+      return group([
+        'receive(',
+        path.call(print, 'namedChildren', 0),
+        ') ',
+        path.call(print, 'namedChildren', 1),
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
 
-      return node.text
+    case 'storage_function':
     case 'global_function':
-      // console.log(
-      //   node,
-      //   '\n',
-      //   node.text,
-      //   '\n',
-      //   node.namedChildren.map(n => ({ n, text: n.text }))
-      // )
-
       if (node.namedChildren.some(n => n.type === 'function_attributes')) {
         return group([
           path.call(print, 'namedChildren', 0),
@@ -80,7 +104,12 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
               path.call(print, 'namedChildren', 4),
             ])
             : path.call(print, 'namedChildren', 3),
-        ].filter(filterTrusty))
+
+          ...node.nextNamedSibling
+          && !doesCommentBelongToNode(node.nextNamedSibling)
+            ? [hardline]
+            : [],
+        ])
       }
 
       return group([
@@ -95,6 +124,11 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
             path.call(print, 'namedChildren', 3),
           ])
           : path.call(print, 'namedChildren', 2),
+
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
       ])
     case 'native_function':
       if (node.namedChildren.some(n => n.type === 'function_attributes')) {
@@ -114,6 +148,11 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
             ? [': ', path.call(print, 'namedChildren', 4)]
             : [],
           ';',
+
+          ...node.nextNamedSibling
+          && !doesCommentBelongToNode(node.nextNamedSibling)
+            ? [hardline]
+            : [],
         ])
       }
 
@@ -132,6 +171,11 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           ? [': ', path.call(print, 'namedChildren', 3)]
           : [],
         ';',
+
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
       ])
     case 'func_identifier':
       return node.text
@@ -150,18 +194,48 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 1),
       ])
     case 'function_body':
-
       if (node.namedChildCount === 0) {
         if (node.nextNamedSibling)
           return [node.text, hardline]
         return node.text
       }
+
       return group([
         '{',
         indent([hardline, path.map(print, 'namedChildren')]),
         hardline,
         '}',
       ])
+    case 'augmented_assignment_statement':
+      return group([
+        path.call(print, 'namedChildren', 0),
+        ' ',
+        node.child(1)!.text,
+        ' ',
+        path.call(print, 'namedChildren', 1),
+        ';',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
+    case 'assignment_statement':
+      return group([
+        path.call(print, 'namedChildren', 0),
+        ' = ',
+        path.call(print, 'namedChildren', 1),
+        ';',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
+    case 'lvalue':
+      return node.text
+    case 'return_statement':
+      return ['return ', path.map(print, 'children'), ';']
+    case 'field_access_expression':
+      return node.text
     case 'message': {
       const isOverwritesUniqueId = node.children
         .some((node: SyntaxNode) => node.type === 'message_value')
@@ -208,7 +282,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'field':
       return formatField(path, print)
     case 'if_statement':
-
       return group([
         'if (',
         path.call(print, 'namedChildren', 0),
@@ -234,6 +307,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'expression_statement':
       return [node.text, ';']
     case 'binary_expression':
+      // maybe not to use node.text
       return node.text
     case 'identifier':
     case 'type_identifier':
@@ -244,6 +318,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       return formatComment(path)
     case 'string':
     case 'boolean':
+    case 'integer':
       return node.text
     default:
     // console.log(node)

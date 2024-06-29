@@ -8,9 +8,6 @@ import { bodyComment } from './contants'
 export const separatedNodes = new Set([
   'if_statement',
   'message',
-  'contract',
-  'global_function',
-  'native_function',
 ])
 
 const { hardline } = doc.builders

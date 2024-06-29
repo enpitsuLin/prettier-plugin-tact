@@ -11,28 +11,35 @@ fun baz(){
 }
 
 fun customPow(a: Int, c: Int): Int {
-
+    return res;
 }
 
+contract FilterTrait with Ownable {
+    // Virtual functions can be overridden by users of this trait
+    virtual fun filterMessage(): Bool {
+        return sender() != self.owner;
+    }
 
+    abstract fun specialFilter(): Bool
+}
 
 contract Filter with FilterTrait {
     // Overriding default behavior of the FilterTrait
     override fun filterMessage(): Bool {
         return true;
     }
- 
+
     override fun specialFilter(): Bool {
         return true;
     }
 }
 
 extends fun customPow(self: Int, c: Int): Int {
-
+    return res;
 }
 
 extends mutates fun customPow(self: Int, c: Int){
-
+    self = res;
 }
 
 @name(store_uint)
@@ -49,7 +56,7 @@ contract Treasure {
     receive("Increment") {
         self.counter += 1;
     }
-    
+
     get fun counter(): Int {
         return self.counter;
     }
