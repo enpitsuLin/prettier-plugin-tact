@@ -28,7 +28,10 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         'import ',
         path.call(print, 'namedChildren', 0),
         ';',
-        ...node.nextNamedSibling?.type !== 'import' ? [hardline] : [],
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
       ])
     case 'trait':
     case 'contract':
@@ -200,6 +203,10 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           indent([hardline, path.call(print, 'namedChildren', 2)]),
           hardline,
           '}',
+          ...node.nextNamedSibling
+          && !doesCommentBelongToNode(node.nextNamedSibling)
+            ? [hardline]
+            : [],
         ])
       }
       return group([
@@ -209,6 +216,10 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         indent([hardline, path.call(print, 'namedChildren', 1)]),
         hardline,
         '}',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
       ])
     }
     case 'message_value':

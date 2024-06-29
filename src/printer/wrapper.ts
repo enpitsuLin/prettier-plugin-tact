@@ -7,7 +7,6 @@ import { bodyComment } from './contants'
 // These node should separated with newline
 export const separatedNodes = new Set([
   'if_statement',
-  'message',
 ])
 
 const { hardline } = doc.builders
