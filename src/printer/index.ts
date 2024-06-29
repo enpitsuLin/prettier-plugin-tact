@@ -188,8 +188,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           ? [hardline]
           : [],
       ])
-    case 'lvalue':
-      return node.text
     case 'return_statement':
       return ['return ', path.map(print, 'namedChildren'), ';']
     case 'field_access_expression':
@@ -225,7 +223,11 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       ])
     }
     case 'message_value':
-      return node.text
+      return group([
+        '(',
+        path.call(print, 'namedChildren', 0),
+        ')',
+      ])
     case 'message_body':
       if (node.namedChildCount === 0)
         return node.text
@@ -360,13 +362,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           ? [hardline]
           : [' '],
       ]
-    case 'method_call_expression':
-    case 'binary_expression':
-      // maybe not to use node.text for method_call_experssion and binary_expression
-      return node.text
-    case 'identifier':
-    case 'type_identifier':
-      return node.text
     case 'tlb_serialization':
       return [' as ', path.map(print, 'namedChildren')]
     case 'comment':
@@ -421,23 +416,29 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 0),
         '>',
       ])
-    case 'self':
-    case 'string':
-    case 'boolean':
-    case 'integer':
-    case 'null':
-      return node.text
     case 'unary_expression':
       return group([
         '-',
         path.call(print, 'namedChildren', 0),
       ])
+    case 'method_call_expression':
+    case 'binary_expression':
+      // maybe not to use node.text for method_call_experssion and binary_expression
+      return node.text
+    case 'identifier':
+    case 'type_identifier':
+    case 'self':
+    case 'string':
+    case 'boolean':
+    case 'integer':
+    case 'null':
+    case 'lvalue':
+      return node.text
     default:
       // console.log(node, node.text)
       // console.table(node.namedChildren.map(({ type, text }) => ({ type, text })))
+      return ''
   }
-
-  return ''
 }
 
 export const printer: Printer<SyntaxNode> = {
