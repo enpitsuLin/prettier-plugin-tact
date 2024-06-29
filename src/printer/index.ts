@@ -364,10 +364,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       return [' as ', path.map(print, 'namedChildren')]
     case 'comment':
       return formatComment(path)
-    case 'string':
-    case 'boolean':
-    case 'integer':
-      return node.text
     case 'static_call_expression':
       return group([
         path.call(print, 'namedChildren', 0),
@@ -382,7 +378,6 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'argument':
       return path.map(print, 'namedChildren')
     case 'instance_expression':
-
       return group([
         path.call(print, 'namedChildren', 0),
         ' ',
@@ -400,8 +395,21 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       ])
     case 'instance_argument':
       return [node.text, ';']
+    case 'initOf':
+      return group([
+        'initOf ',
+        path.call(print, 'namedChildren', 0),
+        path.call(print, 'namedChildren', 1),
+      ])
+
+    case 'string':
+    case 'boolean':
+    case 'integer':
+    case 'null':
+      return node.text
     default:
-    // console.log(node, node.text)
+      // console.log(node, node.text, node.parent?.text)
+      // console.table(node.namedChildren.map(({ type, text }) => ({ type, text })))
   }
 
   return ''
