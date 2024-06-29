@@ -374,8 +374,27 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       ])
     case 'argument':
       return path.map(print, 'namedChildren')
+    case 'instance_expression':
+
+      return group([
+        path.call(print, 'namedChildren', 0),
+        ' ',
+        path.call(print, 'namedChildren', 1),
+      ])
+    case 'instance_argument_list':
+      return group([
+        '{',
+        indent([
+          node.startPosition.row === node.endPosition.row ? ' ' : hardline,
+          join(node.startPosition.row === node.endPosition.row ? ' ' : hardline, path.map(print, 'namedChildren')),
+        ]),
+        node.startPosition.row === node.endPosition.row ? ' ' : hardline,
+        '}',
+      ])
+    case 'instance_argument':
+      return [node.text, ';']
     default:
-    // console.log(node)
+    // console.log(node,node.text)
   }
 
   return ''
