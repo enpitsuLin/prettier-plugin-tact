@@ -34,7 +34,7 @@ contract TokenParent with Deployable {
     }
 
     get fun metadata(): Metadata {
-        return ;
+        return Metadata { symbol: self.symbol; totalSupply: self.totalSupply; };
     }
 
     get fun childAddress(owner: Address): Address {

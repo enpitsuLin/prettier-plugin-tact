@@ -120,7 +120,13 @@ contract  {
     // ====== Get Methods ====== //
     get fun get_jetton_data(): JettonData {
         let code: Cell = self.getJettonWalletInit(myAddress()).code;
-        return ;
+        return JettonData {
+            totalSupply: self.totalSupply;
+            mintable: self.mintable;
+            owner: self.owner;
+            content: self.content;
+            walletCode: code;
+        };
     }
 
     get fun get_wallet_address(owner: Address): Address {
@@ -260,7 +266,12 @@ contract  {
 
 
     get fun get_wallet_data(): JettonWalletData {
-        return ;
+        return JettonWalletData {
+            balance: self.balance;
+            owner: self.owner;
+            master: self.master;
+            walletCode: (initOf JettonDefaultWallet(self.master, self.owner)).code;
+        };
     }
 }
 

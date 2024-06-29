@@ -28,14 +28,14 @@ contract Functions with Deployable {
     // this contract method returns multiple return values using a struct
     fun getInfo(index: Int): TokenInfo {
         if (index == 1) {
-            return ;
+            return TokenInfo { ticker: "TON"; decimals: 9; };
         }
 
         if (index == 2) {
-            return ;
+            return TokenInfo { ticker: "ETH"; decimals: 18; };
         }
 
-        return ;
+        return TokenInfo { ticker: "unknown"; decimals: 0; };
     }
 
     receive("best L1") {
