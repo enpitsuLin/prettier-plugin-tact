@@ -1,6 +1,7 @@
 import "@stdlib/deploy";
 
 // global constants are calculated in compile-time and can't change
+const GlobalConst1: Int = 1000 + ton("1.24") + pow(10, 9);
 
 contract Constants with Deployable {
     // contract constants are calculated in compile-time and can't change

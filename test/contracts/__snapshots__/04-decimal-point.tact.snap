@@ -9,6 +9,7 @@ message Withdraw {
     amount: Int as coins; // nano-tons
 }
 
+const SecondsPerYear: Int = 365 * 24 * 60 * 60;
 
 contract Interest with Deployable {
     interestPercent: Int as int32;
