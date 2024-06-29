@@ -2,6 +2,7 @@ import "@stdlib/deploy";
 
 // this contract records the last 5 timestamps of when "timer" message was received
 contract Arrays with Deployable {
+    const MaxSize: Int = 5;
     arr: ;// this is our array implemented with a map
     arrLength: Int as uint8 = 0;
     arrStart: Int as uint8 = 0;// our array is cyclic

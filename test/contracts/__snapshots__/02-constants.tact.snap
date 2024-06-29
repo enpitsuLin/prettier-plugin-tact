@@ -4,8 +4,13 @@ import "@stdlib/deploy";
 
 contract Constants with Deployable {
     // contract constants are calculated in compile-time and can't change
+    const ContractConst1: Int = 2000 + ton("1.25") + pow(10, 9);
 
     // if your contract can be in multiple states, constants are an easy alternative to enums
+    const StateUnpaid: Int = 0;
+    const StatePaid: Int = 1;
+    const StateDelivered: Int = 2;
+    const StateDisputed: Int = 3;
 
     init() {}
 

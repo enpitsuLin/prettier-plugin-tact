@@ -6,7 +6,7 @@ message Withdraw {
 }
 
 contract SendCoins with Deployable {
-    // enough for 1 KB of storage for 2.5 years
+    const MinTonForStorage: Int = ton("0.01");// enough for 1 KB of storage for 2.5 years
     deployer: Address;
 
     init() {
