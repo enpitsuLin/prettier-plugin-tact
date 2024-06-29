@@ -108,6 +108,28 @@ export function formatFunction(path: AstPath<SyntaxNode>, print: (path: AstPath<
   ])
 }
 
+export function formatContract(path: AstPath<SyntaxNode>, print: (path: AstPath<SyntaxNode>) => doc.builders.Doc) {
+  const node = path.node
+
+  const attributesIndex = node.namedChildren.findIndex(n => ['trait_attributes', 'contract_attributes'].includes(n.type))
+  const traitIndex = node.namedChildren.findIndex(n => n.type === 'trait_list')
+  const identityIndex = node.namedChildren.findIndex(n => n.type === 'identifier')
+
+  return group([
+    attributesIndex !== -1 ? [path.call(print, 'namedChildren', attributesIndex)] : [],
+    'contract ',
+    identityIndex !== -1 ? [path.call(print, 'namedChildren', identityIndex), ' '] : [],
+    traitIndex !== -1 ? [path.call(print, 'namedChildren', traitIndex), ' '] : [],
+    // contract_body
+    path.call(validatePrint(print), 'lastNamedChild'),
+    ...node.nextNamedSibling
+    && !doesCommentBelongToNode(node.nextNamedSibling)
+      ? [hardline]
+      : [],
+
+  ])
+}
+
 export function doesNodesInSameRow(...nodes: SyntaxNode[]): boolean {
   let row: number | null = null
   return nodes.some(({ startPosition }) => {

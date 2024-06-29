@@ -1,7 +1,7 @@
 import type { Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
-import { doesCommentBelongToNode, doesNodesInSameRow, formatComment, formatField, formatFunction, validatePrint } from './utils'
+import { doesCommentBelongToNode, doesNodesInSameRow, formatComment, formatContract, formatField, formatFunction, validatePrint } from './utils'
 import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, group } = doc.builders
@@ -31,30 +31,16 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         ...node.nextNamedSibling?.type !== 'import' ? [hardline] : [],
       ])
     case 'trait':
-    case 'contract': {
-      const hasTrait = node.namedChild(1)?.type === 'trait_list'
-
+    case 'contract':
+      return formatContract(path, print)
+    case 'trait_attributes':
+    case 'contract_attributes':
       return group([
-        'contract ',
-        join(' ', [
-          hasTrait
-            ? join(' ', [
-              // contract identifier
-              path.call(print, 'namedChildren', 0),
-              // maybe trait_list
-              path.call(print, 'namedChildren', 1),
-            ])
-            : path.call(print, 'namedChildren', 0),
-          // contract_body
-          path.call(validatePrint(print), 'lastNamedChild'),
-
-          ...node.nextNamedSibling
-          && !doesCommentBelongToNode(node.nextNamedSibling)
-            ? [hardline]
-            : [],
-        ]),
+        '@interface(',
+        path.call(print, 'namedChildren', 0),
+        ')',
+        hardline,
       ])
-    }
     case 'trait_list':
       return group([
         'with ',
