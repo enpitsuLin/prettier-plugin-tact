@@ -119,7 +119,7 @@ export function doesNodesInSameRow(...nodes: SyntaxNode[]): boolean {
 }
 
 export function doesCommentBelongToNode(node: SyntaxNode): boolean {
-  if (!node.previousNamedSibling || node.type !== 'comment')
+  if (!node.previousNamedSibling || !bodyComment.has(node.type))
     return false
 
   return (
@@ -129,7 +129,7 @@ export function doesCommentBelongToNode(node: SyntaxNode): boolean {
 }
 
 export function doesCommentOwnline(node: SyntaxNode): boolean {
-  if (node.type !== 'comment')
+  if (!bodyComment.has(node.type))
     return false
   if (!node.previousNamedSibling || !node.nextNamedSibling)
     return true
