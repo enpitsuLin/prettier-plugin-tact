@@ -8,5 +8,6 @@ export default defineConfig([
     treeshake: true,
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
+    external: ['prettier'],
   },
 ])
