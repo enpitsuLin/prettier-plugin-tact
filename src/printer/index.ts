@@ -91,23 +91,12 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       ]
     }
     case 'receive_function':
-      return group([
-        'receive(',
-        path.call(print, 'namedChildren', 0),
-        ') ',
-        path.call(print, 'namedChildren', 1),
-        ...node.nextNamedSibling
-        && !doesCommentBelongToNode(node.nextNamedSibling)
-          ? [hardline]
-          : [],
-      ])
-
     case 'bounced_function':
       return group([
-        'bounced(',
-        path.call(print, 'namedChildren', 0),
+        node.type === 'receive_function' ? 'receive(' : 'bounced(',
+        ...node.namedChild(0)?.type !== 'function_body' ? [path.call(print, 'namedChildren', 0)] : [],
         ') ',
-        path.call(print, 'namedChildren', 1),
+        path.call(print, 'namedChildren', node.namedChild(1)?.type === 'function_body' ? 1 : 0),
         ...node.nextNamedSibling
         && !doesCommentBelongToNode(node.nextNamedSibling)
           ? [hardline]
