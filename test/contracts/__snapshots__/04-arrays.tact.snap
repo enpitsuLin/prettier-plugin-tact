@@ -14,7 +14,7 @@ contract Arrays with Deployable {
         if (self.arrLength < self.MaxSize) {
             self.arr.set(self.arrLength, item);
             self.arrLength = self.arrLength + 1;
-        } else  {
+        } else {
             self.arr.set(self.arrStart, item);
             self.arrStart = (self.arrStart + 1) % self.MaxSize;
         }

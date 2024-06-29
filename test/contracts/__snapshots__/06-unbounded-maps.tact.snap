@@ -81,7 +81,7 @@ contract TokenChild {
     receive(msg: InternalAddTokens) {
         if (msg.origin == self.parent) {// tokens originate in a mint
             require(sender() == self.parent, "Parent only");
-        } else  {// tokens originate in a Transfer
+        } else {// tokens originate in a Transfer
             require(sender() == contractAddress(initOf TokenChild(self.parent, msg.origin)), "Sibling only");
         }
 

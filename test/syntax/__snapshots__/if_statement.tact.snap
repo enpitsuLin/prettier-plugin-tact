@@ -5,7 +5,7 @@ fun if_statement() {
 
     if ((2 + 2) == 4) {// consequence, when condition is true
         dump(true);
-    } else  {// alternative, when condition is false
+    } else {// alternative, when condition is false
         dump(false);
     }
 
@@ -16,10 +16,10 @@ fun if_statement() {
         dump("3?");
          //        condition2
         //        ↓
-    } else if (2 + 2 == 4) {
+    } elseif (2 + 2 == 4) {
         // another consequence, when condition2 is true
         dump(true);
-    } else  {
+    } else {
         // alternative, when both condition and condition2 are false
         dump(false);
     }

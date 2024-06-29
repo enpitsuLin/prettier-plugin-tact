@@ -16,7 +16,7 @@ contract IfStatements with Deployable {
     receive("check2") {
         if (self.val > 100) {
             dump("larger than 100");
-        } else  {
+        } else {
             dump("smaller than 100");
         }
     }
@@ -24,9 +24,9 @@ contract IfStatements with Deployable {
     receive("check3") {
         if (self.val > 1000) {
             dump("larger than 1000");
-        } else if (self.val > 500) {
+        } elseif (self.val > 500) {
             dump("between 500 and 1000");
-        } else  {
+        } else {
             dump("smaller than 500");
         }
     }

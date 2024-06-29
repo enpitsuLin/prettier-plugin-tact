@@ -12,7 +12,7 @@ contract MessageSender with Deployable {
     receive("who") {
         if (sender() == self.deployer) {
             dump("deployer");
-        } else  {
+        } else {
             dump("not deployer!");
         }
     }

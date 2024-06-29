@@ -42,7 +42,7 @@ contract Optionals with Deployable {
     get fun optIntVal(): Int {
         if (self.ca == null) {
             return -1;
-        } else  {
+        } else {
             return self.ca!!;// !! tells the compiler this can't be null
         }
     }
@@ -50,7 +50,7 @@ contract Optionals with Deployable {
     get fun optNested(): Int {
         if (self.cd != null && (self.cd!!).sa != null) {
             return (self.cd!!).sa!!;// !! tells the compiler this can't be null
-        } else  {
+        } else {
             return null;
         }
     }
