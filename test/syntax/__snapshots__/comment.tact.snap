@@ -1,4 +1,4 @@
-fun comment(){
+fun comment() {
     // trailing line comment
 
     // line comment

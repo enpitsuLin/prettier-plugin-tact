@@ -1,12 +1,12 @@
-fun foo(a: Int, // trailing comma in parameter lists is allowed){}
+fun foo(a: Int, // trailing comma in parameter lists is allowed) {}
 
-fun bar(){
+fun bar() {
     foo(
         5, // trailing comma in argument lists is allowed too!
     );
 }
 
-fun baz(){
+fun baz() {
     // comment in function_body
 }
 
@@ -20,7 +20,7 @@ contract FilterTrait with Ownable {
         return sender() != self.owner;
     }
 
-    abstract fun specialFilter(): Bool
+    abstract fun specialFilter(): Bool;
 }
 
 contract Filter with FilterTrait {
@@ -38,7 +38,7 @@ extends fun customPow(self: Int, c: Int): Int {
     return res;
 }
 
-extends mutates fun customPow(self: Int, c: Int){
+extends mutates fun customPow(self: Int, c: Int) {
     self = res;
 }
 

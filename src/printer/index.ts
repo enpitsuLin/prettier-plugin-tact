@@ -1,7 +1,7 @@
 import type { Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
-import { doesCommentBelongToNode, filterTrusty, formatComment, formatField, validatePrint } from './utils'
+import { doesCommentBelongToNode, formatComment, formatField, formatFunction, validatePrint } from './utils'
 import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, group } = doc.builders
@@ -90,93 +90,8 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
 
     case 'storage_function':
     case 'global_function':
-      if (node.namedChildren.some(n => n.type === 'function_attributes')) {
-        return group([
-          path.call(print, 'namedChildren', 0),
-          ' fun ',
-          // function identity
-          path.call(print, 'namedChildren', 1),
-          path.call(print, 'namedChildren', 2),
-          node.namedChild(3)?.type === 'type_identifier'
-            ? join(' ', [
-              ':',
-              path.call(print, 'namedChildren', 3),
-              path.call(print, 'namedChildren', 4),
-            ])
-            : path.call(print, 'namedChildren', 3),
-
-          ...node.nextNamedSibling
-          && !doesCommentBelongToNode(node.nextNamedSibling)
-            ? [hardline]
-            : [],
-        ])
-      }
-
-      return group([
-        'fun ',
-        // function identity
-        path.call(print, 'namedChildren', 0),
-        path.call(print, 'namedChildren', 1),
-        node.namedChild(2)?.type === 'type_identifier'
-          ? join(' ', [
-            ':',
-            path.call(print, 'namedChildren', 2),
-            path.call(print, 'namedChildren', 3),
-          ])
-          : path.call(print, 'namedChildren', 2),
-
-        ...node.nextNamedSibling
-        && !doesCommentBelongToNode(node.nextNamedSibling)
-          ? [hardline]
-          : [],
-      ])
     case 'native_function':
-      if (node.namedChildren.some(n => n.type === 'function_attributes')) {
-        return group([
-          group([
-            '@name(',
-            path.call(print, 'namedChildren', 0),
-            ')',
-            hardline,
-          ]),
-          path.call(print, 'namedChildren', 1),
-          ' native ',
-          // function identity
-          path.call(print, 'namedChildren', 2),
-          path.call(print, 'namedChildren', 3),
-          ...node.namedChild(4)
-            ? [': ', path.call(print, 'namedChildren', 4)]
-            : [],
-          ';',
-
-          ...node.nextNamedSibling
-          && !doesCommentBelongToNode(node.nextNamedSibling)
-            ? [hardline]
-            : [],
-        ])
-      }
-
-      return group([
-        group([
-          '@name(',
-          path.call(print, 'namedChildren', 0),
-          ')',
-          hardline,
-        ]),
-        'native ',
-        // function identity
-        path.call(print, 'namedChildren', 1),
-        path.call(print, 'namedChildren', 2),
-        ...node.namedChild(3)
-          ? [': ', path.call(print, 'namedChildren', 3)]
-          : [],
-        ';',
-
-        ...node.nextNamedSibling
-        && !doesCommentBelongToNode(node.nextNamedSibling)
-          ? [hardline]
-          : [],
-      ])
+      return formatFunction(path, print)
     case 'func_identifier':
       return node.text
     case 'function_attributes':

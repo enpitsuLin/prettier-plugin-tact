@@ -1,4 +1,4 @@
-fun if_statement(){
+fun if_statement() {
     if (true) {
         // consequence, when condition is true
         dump((2 + 2));

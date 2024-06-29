@@ -54,6 +54,60 @@ export function formatField(path: AstPath<SyntaxNode>, print: (path: AstPath<Syn
   ])
 }
 
+/**
+ * format (abstract)storage function/global function/native function
+ */
+export function formatFunction(path: AstPath<SyntaxNode>, print: (path: AstPath<SyntaxNode>) => doc.builders.Doc) {
+  const node = path.node
+  const isNativeFunction = node.type === 'native_function'
+
+  const hasFunAttributes = node.namedChildren.some(n => n.type === 'function_attributes')
+
+  if (!isNativeFunction) {
+    const hasReturnType = node.namedChild(hasFunAttributes ? 3 : 2)?.type === 'type_identifier'
+    const hasFunBody = node.namedChildren.some(n => n.type === 'function_body')
+
+    const attributes = hasFunAttributes ? [path.call(print, 'namedChildren', 0)] : []
+    const identity = path.call(print, 'namedChildren', hasFunAttributes ? 1 : 0)
+    const parameterList = path.call(print, 'namedChildren', hasFunAttributes ? 2 : 1)
+    const returnType = path.call(print, 'namedChildren', hasFunAttributes ? 3 : 2)
+    const body = path.call(print, 'namedChildren', hasFunAttributes ? hasReturnType ? 4 : 3 : hasReturnType ? 3 : 2)
+    return group([
+      hasFunAttributes ? [attributes, ' '] : [],
+      'fun ',
+      identity,
+      parameterList,
+      ...hasReturnType ? [': ', returnType] : [],
+      hasFunBody ? [' ', body] : ';',
+      ...node.nextNamedSibling
+      && !doesCommentBelongToNode(node.nextNamedSibling)
+        ? [hardline]
+        : [],
+    ])
+  }
+  const hasReturnType = node.namedChild(hasFunAttributes ? 4 : 3)?.type === 'type_identifier'
+
+  const func_identifier = path.call(print, 'namedChildren', 0)
+  const attributes = hasFunAttributes ? [path.call(print, 'namedChildren', 1)] : []
+  const identity = path.call(print, 'namedChildren', hasFunAttributes ? 2 : 1)
+  const parameterList = path.call(print, 'namedChildren', hasFunAttributes ? 3 : 2)
+  const returnType = path.call(print, 'namedChildren', hasFunAttributes ? 4 : 3)
+
+  return group([
+    [`@name(`, func_identifier, ')', hardline],
+    hasFunAttributes ? [attributes, ' '] : [],
+    'native ',
+    identity,
+    parameterList,
+    ...hasReturnType ? [': ', returnType] : [],
+    ';',
+    ...node.nextNamedSibling
+    && !doesCommentBelongToNode(node.nextNamedSibling)
+      ? [hardline]
+      : [],
+  ])
+}
+
 export function doesCommentBelongToNode(node: SyntaxNode): boolean {
   if (!node.previousNamedSibling || node.type !== 'comment')
     return false
