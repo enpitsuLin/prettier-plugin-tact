@@ -8,13 +8,15 @@ contract Trackable with Ownable {
 
     // Storage
 
-    owner: Address;numMessagesReceived: Int; // your new trait may add state variables but should not specify their size
+    owner: Address;
+    numMessagesReceived: Int; // your new trait may add state variables but should not specify their size
 
     // Receivers
 
     receive("reset stats") {
         // your new trait may handle specific messages
-        self.requireOwner();self.numMessagesReceived = 0;
+        self.requireOwner();
+        self.numMessagesReceived = 0;
         self.reply("reset done".asComment());
     }
 
@@ -53,8 +55,16 @@ contract Counter with Deployable, Trackable {
     numMessagesReceived: Int as uint64;// The Trackable trait requires this exact state variable
     val: Int as uint32;
 
+    init() {
+        self.owner = sender();
+        // we can initialize owner to any value we want, the deployer in this case
+        self.numMessagesReceived = 0;
+        self.val = 0;
+    }
+
     receive("increment") {
-        self.receivedNewMessage();// here we are using our trait
+        self.receivedNewMessage();
+        // here we are using our trait
         self.val = self.val + 1;
     }
 

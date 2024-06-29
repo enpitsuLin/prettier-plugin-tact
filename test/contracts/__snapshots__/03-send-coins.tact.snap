@@ -9,6 +9,10 @@ contract SendCoins with Deployable {
     // enough for 1 KB of storage for 2.5 years
     deployer: Address;
 
+    init() {
+        self.deployer = sender();
+    }
+
     // accept incoming TON transfers
     receive({
         dump("funds received");
@@ -16,7 +20,8 @@ contract SendCoins with Deployable {
 
     // this will withdraw the entire balance of the contract and leave 0
     receive("withdraw all") {
-        require(sender() == self.deployer, "Only deployer is allowed to withdraw");send(SendParameters{
+        require(sender() == self.deployer, "Only deployer is allowed to withdraw");
+        send(SendParameters{
             to: sender(),
             bounce: true,
             value: 0,
@@ -26,7 +31,8 @@ contract SendCoins with Deployable {
 
     // this will withdraw the entire balance but leave 0.01 for storage rent costs
     receive("withdraw safe") {
-        require(sender() == self.deployer, "Only deployer is allowed to withdraw");send(SendParameters{
+        require(sender() == self.deployer, "Only deployer is allowed to withdraw");
+        send(SendParameters{
             to: sender(),
             bounce: true,
             value: myBalance() - context().value - self.MinTonForStorage,
@@ -36,8 +42,10 @@ contract SendCoins with Deployable {
 
     // this will withdraw a specific amount but leave 0.01 for storage rent costs
     receive(msg: Withdraw) {
-        require(sender() == self.deployer, "Only deployer is allowed to withdraw");let amount: Int = ;
-        require(amount > 0, "Insufficient balance");send(SendParameters{
+        require(sender() == self.deployer, "Only deployer is allowed to withdraw");
+        let amount: Int = min(msg.amount, myBalance() - context().value - self.MinTonForStorage);
+        require(amount > 0, "Insufficient balance");
+        send(SendParameters{
             to: sender(),
             bounce: true,
             value: amount,

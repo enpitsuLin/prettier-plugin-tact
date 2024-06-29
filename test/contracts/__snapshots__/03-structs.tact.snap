@@ -16,7 +16,13 @@ message Add {
 
 contract Structs with Deployable {
     // contract persistent state variables
-    s1: Point;s2: Params;
+    s1: Point;
+    s2: Params;
+
+    init() {
+        self.s1 = ;
+        self.s2 = ;
+    }
 
     receive("show ops") {
         // temporary variable

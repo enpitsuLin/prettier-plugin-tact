@@ -7,9 +7,17 @@ contract Counter with Deployable, Stoppable {
     stopped: Bool;// The Stoppable trait requires you to add this exact state variable
     val: Int as uint32;
 
+    init() {
+        self.owner = sender();
+        // we can initialize owner to any value we want, the deployer in this case
+        self.stopped = false;
+        self.val = 0;
+    }
+
     // this message will only work until the contract was stopped
     receive("increment") {
-        self.requireNotStopped();self.val = self.val + 1;
+        self.requireNotStopped();
+        self.val = self.val + 1;
     }
 
     get fun value(): Int {

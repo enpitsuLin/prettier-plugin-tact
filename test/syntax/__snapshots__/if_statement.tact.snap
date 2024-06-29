@@ -13,7 +13,8 @@ fun if_statement() {
     // ↓
     if (2 + 2 == 3) {
         // consequence, when condition is true
-        dump("3?"); //        condition2
+        dump("3?");
+         //        condition2
         //        ↓
     } else if (2 + 2 == 4) {
         // another consequence, when condition2 is true

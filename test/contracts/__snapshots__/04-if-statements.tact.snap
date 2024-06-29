@@ -3,6 +3,10 @@ import "@stdlib/deploy";
 contract IfStatements with Deployable {
     val: Int as int32;
 
+    init() {
+        self.val = 17;
+    }
+
     receive("check1") {
         if (self.val > 10) {
             dump("larger than 10");

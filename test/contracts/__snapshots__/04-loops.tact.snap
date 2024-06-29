@@ -1,6 +1,7 @@
 import "@stdlib/deploy";
 
 contract Loops with Deployable {
+    init() {}
 
     receive("loop1") {
         let sum: Int = 0;

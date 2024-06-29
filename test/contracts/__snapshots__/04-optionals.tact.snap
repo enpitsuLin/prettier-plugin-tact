@@ -14,7 +14,17 @@ message MsgOpts {
 }
 
 contract Optionals with Deployable {
-    ca: Int;cb: Bool;cc: Address;cd: StrctOpts;
+    ca: Int;
+    cb: Bool;
+    cc: Address;
+    cd: StrctOpts;
+
+    init(a: Int, b: Bool, c: Address) {
+        self.ca = a;
+        self.cb = b;
+        self.cc = c;
+        self.cd = ;
+    }
 
     receive(msg: MsgOpts) {
         let i: Int = 12;

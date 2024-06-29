@@ -7,23 +7,42 @@ message Mint {
 }
 
 contract SampleJetton with Jetton {
-    totalSupply: Int as coins;owner: Address;content: Cell;mintable: Bool;
+    totalSupply: Int as coins;
+    owner: Address;
+    content: Cell;
+    mintable: Bool;
+
     max_supply: Int as coins;
 
+    init(owner: Address, content: Cell, max_supply: Int) {
+        self.totalSupply = 0;
+        self.owner = owner;
+        self.mintable = true;
+        self.content = content;
+
+        self.max_supply = max_supply;
+        // Initial Setting for max_supply
+    }
+
     receive(msg: Mint) {
-        let ctx: Context = ;
-        require(ctx.sender == self.owner, "Not Owner");require(self.mintable, "Can't Mint Anymore");self.mint(msg.receiver, msg.amount, self.owner);// (to, amount, response_destination)
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Not Owner");
+        require(self.mintable, "Can't Mint Anymore");
+        self.mint(msg.receiver, msg.amount, self.owner);
+        // (to, amount, response_destination)
     }
 
     receive("Mint: 100") {
         // Public Minting
-        let ctx: Context = ;
-        require(self.mintable, "Can't Mint Anymore");self.mint(ctx.sender, 100, self.owner);
+        let ctx: Context = context();
+        require(self.mintable, "Can't Mint Anymore");
+        self.mint(ctx.sender, 100, self.owner);
     }
 
     receive("Owner: MintClose") {
-        let ctx: Context = ;
-        require(ctx.sender == self.owner, "Not Owner");self.mintable = false;
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Not Owner");
+        self.mintable = false;
     }
 }
 
@@ -37,17 +56,22 @@ struct JettonData {
 // ============================================================================================================ //
 contract  {
     totalSupply: Int;// Already set initially
-    mintable: Bool;owner: Address;content: Cell;
+    mintable: Bool;
+    owner: Address;
+    content: Cell;
+
     max_supply: Int;// This is not in the TEP-74 interface
 
     receive(msg: TokenUpdateContent) {
-        self.requireOwner();// Allow changing content only by owner
+        self.requireOwner();
+        // Allow changing content only by owner
         self.content = msg.content;
         // Update content
     }
 
     receive(msg: TokenBurnNotification) {
-        self.requireWallet(msg.owner);// Check wallet
+        self.requireWallet(msg.owner);
+        // Check wallet
         self.totalSupply = self.totalSupply - msg.amount;
         // Update supply
         if (msg.response_destination != null) {// Cashback
@@ -67,7 +91,8 @@ contract  {
      // @amount The amount of Jetton token being minted
     // @response_destination The previous owner address
     fun mint(to: Address, amount: Int, response_destination: Address) {
-        require(self.totalSupply + amount <= self.max_supply, "The total supply will be overlapping.");self.totalSupply = self.totalSupply + amount;
+        require(self.totalSupply + amount <= self.max_supply, "The total supply will be overlapping.");
+        self.totalSupply = self.totalSupply + amount;
         // Update total supply
 
         let winit: StateInit = self.getJettonWalletInit(to);
@@ -91,7 +116,7 @@ contract  {
     }
 
     fun requireWallet(owner: Address) {
-        let ctx: Context = ;
+        let ctx: Context = context();
         let winit: StateInit = self.getJettonWalletInit(owner);
         require(contractAddress(winit) == ctx.sender, "Invalid sender");
     }
@@ -108,28 +133,39 @@ contract  {
 
     get fun get_wallet_address(owner: Address): Address {
         let winit: StateInit = self.getJettonWalletInit(owner);
-        return ;
+        return contractAddress(winit);
     }
 }
 // ============================================================ //
 contract  {
 
-    balance: Int;owner: Address;master: Address;
+    balance: Int;
+    owner: Address;
+    master: Address;
+
+    init(master: Address, owner: Address) {
+        self.balance = 0;
+        self.owner = owner;
+        self.master = master;
+    }
 
     receive(msg: TokenTransfer) {
         // 0xf8a7ea5
-        let ctx: Context = ;
+        let ctx: Context = context();
         // Check sender
         require(ctx.sender == self.owner, "Invalid sender");
+
         // Gas checks
         let fwdFee: Int = ctx.readForwardFee() + ctx.readForwardFee();
         let final: Int = 2 * self.gasConsumption + self.minTonsForStorage + fwdFee;
         require(ctx.value > min(final, ton("0.01")), "Invalid value!!");
+
         // Update balance
         self.balance = self.balance - msg.amount;
         require(self.balance >= 0, "Invalid balance");
+
         let init: StateInit = ;
-        let walletAddress: Address = ;
+        let walletAddress: Address = contractAddress(init);
         send(SendParameters{
                 to: walletAddress, 
                 value: 0,
@@ -150,7 +186,7 @@ contract  {
 
     receive(msg: TokenTransferInternal) {
         // 0x178d4519
-        let ctx: Context = ;
+        let ctx: Context = context();
 
 
         if (ctx.sender != self.master) {
@@ -161,6 +197,7 @@ contract  {
         // Update balance
         self.balance = self.balance + msg.amount;
         require(self.balance >= 0, "Invalid balance");
+
         // Get value for gas
         let msgValue: Int = self.msgValue(ctx.value);
         let fwdFee: Int = ctx.readForwardFee();
@@ -197,15 +234,18 @@ contract  {
     }
 
     receive(msg: TokenBurn) {
-        let ctx: Context = ;
-        require(ctx.sender == self.owner, "Invalid sender");// Check sender
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Invalid sender");
+        // Check sender
 
         self.balance = self.balance - msg.amount;
         // Update balance
         require(self.balance >= 0, "Invalid balance");
+
         let fwdFee: Int = ctx.readForwardFee();
         // Gas checks
         require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value - Burn");
+
         // Burn tokens
         send(SendParameters{  
             to: self.master,

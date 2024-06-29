@@ -19,10 +19,14 @@ fun loops() {
     }
      {
         // Empty map
-        let cells:  = ;
+        let cells:  = emptyMap();
 
         // Setting four entries
-        cells.set(1, beginCell().storeUint(100, 16).endCell());cells.set(2, beginCell().storeUint(200, 16).endCell());cells.set(3, beginCell().storeUint(300, 16).endCell());cells.set(4, beginCell().storeUint(400, 16).endCell());
+        cells.set(1, beginCell().storeUint(100, 16).endCell());
+        cells.set(2, beginCell().storeUint(200, 16).endCell());
+        cells.set(3, beginCell().storeUint(300, 16).endCell());
+        cells.set(4, beginCell().storeUint(400, 16).endCell());
+
         // A variable for summing up the values
         let sum: Int = 0;
 
@@ -31,14 +35,17 @@ fun loops() {
             let s: Slice = value.beginParse(); // convert Cell to Slice
             sum += s.loadUint(16);// sum the Slice values
         }
-        dump(sum);// 1000
+        dump(sum); // 1000
     }
      {
         // Empty map
-        let quartiles:  = ;
+        let quartiles:  = emptyMap();
 
         // Setting some entries
-        quartiles.set(1, 25);quartiles.set(2, 50);quartiles.set(3, 75);
+        quartiles.set(1, 25);
+        quartiles.set(2, 50);
+        quartiles.set(3, 75);
+
          // Discarding captured keys
         // without modifying them in the map itself
         foreach (_, value in quartiles) {

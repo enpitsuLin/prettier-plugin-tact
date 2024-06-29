@@ -13,15 +13,22 @@ message HiFromChild {
 // we have multiple instances of the children
 contract TodoChild {
     seqno: Int as uint64;
+
     // when deploying an instance, we must specify its index (sequence number)
+    init(seqno: Int) {
+        self.seqno = seqno;
+    }
 
     receive(msg: HiFromParent) {
-        dump(self.seqno);dump("😃 handling hi from parent");self.reply(HiFromChild{fromSeqno: self.seqno, greeting: "sup"}.toCell());
+        dump(self.seqno);
+        dump("😃 handling hi from parent");
+        self.reply(HiFromChild{fromSeqno: self.seqno, greeting: "sup"}.toCell());
     }
 }
 
 // we have one instance of the parent
 contract TodoParent with Deployable {
+    init() {}
 
     receive("greet 3") {
         let i: Int = 0;
@@ -40,6 +47,7 @@ contract TodoParent with Deployable {
     }
 
     receive(msg: HiFromChild) {
-        dump("😑 handling hi from child");dump(msg.fromSeqno);
+        dump("😑 handling hi from child");
+        dump(msg.fromSeqno);
     }
 }

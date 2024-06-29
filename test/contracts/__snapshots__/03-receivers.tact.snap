@@ -20,6 +20,10 @@ message MultiMath {
 contract Receivers with Deployable {
     val: Int as int64;
 
+    init() {
+        self.val = 0;
+    }
+
     // handler for the "Add" message - this is a binary message that has an input argument (amount)
     receive(msg: Add) {
         self.val = self.val + msg.amount;

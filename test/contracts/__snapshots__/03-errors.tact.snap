@@ -8,6 +8,10 @@ message Divide {
 contract Errors with Deployable {
     val: Int as int64;
 
+    init() {
+        self.val = 0;
+    }
+
     // not meeting the condition will raise an error, revert the transaction and all state changes
     receive("increment") {
         self.val = self.val + 1;

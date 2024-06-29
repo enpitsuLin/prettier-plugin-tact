@@ -1,4 +1,5 @@
 contract HelloWorld {
+    init() {}
 
     receive({})
 

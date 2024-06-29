@@ -12,7 +12,15 @@ message Transfer {
 
 // the token parent, mostly used to query general metadata and get children addresses
 contract TokenParent with Deployable {
-    symbol: String;totalSupply: Int as coins;
+    symbol: String;
+    totalSupply: Int as coins;
+
+    init() {
+        self.symbol = "SHIB";
+        self.totalSupply = 500 * pow(10,9);
+        self.mint(self.totalSupply, sender());
+        // mint the entire total supply to deployer
+    }
 
     fun mint(amount: Int, to: Address) {
         let init: StateInit = ;
@@ -31,7 +39,7 @@ contract TokenParent with Deployable {
     }
 
     get fun childAddress(owner: Address): Address {
-        return ;
+        return contractAddress();
     }
 }
 
@@ -43,13 +51,21 @@ message InternalAddTokens {
 }
 
 contract TokenChild {
-    parent: Address;owner: Address;// every child holds the balance of a different owner
+    parent: Address;
+    owner: Address;// every child holds the balance of a different owner
     balance: Int as coins;// this is the balance of the owner
 
+    init(parent: Address, owner: Address) {
+        self.parent = parent;
+        self.owner = owner;
+        self.balance = 0;
+    }
 
     // sent by users to initiate a new transfer
     receive(msg: Transfer) {
-        require(sender() == self.owner, "Access denied");require(self.balance >= msg.amount, "Insufficient balance");self.balance = self.balance - msg.amount;
+        require(sender() == self.owner, "Access denied");
+        require(self.balance >= msg.amount, "Insufficient balance");
+        self.balance = self.balance - msg.amount;
         let init: StateInit = ;
         send(SendParameters{
             to: contractAddress(init),
@@ -58,7 +74,8 @@ contract TokenChild {
             mode: SendIgnoreErrors,
             code: init.code,                // deploy the child if needed
             data: init.data
-        });self.reply("transferred".asComment());
+        });
+        self.reply("transferred".asComment());
     }
 
     // internal message sent by one child to another to update balances

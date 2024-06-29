@@ -12,6 +12,10 @@ message CounterValue {
 contract Counter with Deployable {
     val: Int as uint32;
 
+    init() {
+        self.val = 0;
+    }
+
     // step 6: this contract allows anyone to ask it to increment by 1 (ie. the other contract)
     receive("increment") {
         self.val = self.val + 1;
@@ -40,6 +44,10 @@ message Reach {
 
 contract BulkAdder with Deployable {
     target: Int as uint32;
+
+    init() {
+        self.target = 0;
+    }
 
     // step 1: users will send this message to tell us what target value we need to reach
     receive(msg: Reach) {

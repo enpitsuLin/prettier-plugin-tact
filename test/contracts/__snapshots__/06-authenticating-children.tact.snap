@@ -14,17 +14,27 @@ message HiFromChild {
 contract TodoChild {
     parent: Address;// we added this variable so a child always knows who the parent is
     seqno: Int as uint64;
+
     // when deploying an instance, we must specify its index (sequence number)
+    init(parent: Address, seqno: Int) {
+        require(sender() == parent, "not the parent");
+        self.parent = parent;
+        self.seqno = seqno;
+    }
 
     receive(msg: HiFromParent) {
-        require(sender() == self.parent, "Access denied");// only the real parent can get here
+        require(sender() == self.parent, "Access denied");
+        // only the real parent can get here
 
-        dump(self.seqno);dump("😃 handling hi from parent");self.reply(HiFromChild{fromSeqno: self.seqno, greeting: "sup"}.toCell());
+        dump(self.seqno);
+        dump("😃 handling hi from parent");
+        self.reply(HiFromChild{fromSeqno: self.seqno, greeting: "sup"}.toCell());
     }
 }
 
 // we have one instance of the parent
 contract TodoParent with Deployable {
+    init() {}
 
     receive("greet 3") {
         let i: Int = 0;
@@ -43,10 +53,12 @@ contract TodoParent with Deployable {
     }
 
     receive(msg: HiFromChild) {
-        let expectedAddress: Address = ;
+        let expectedAddress: Address = contractAddress();
 
-        require(sender() == expectedAddress, "Access denied");// only the real children can get here
+        require(sender() == expectedAddress, "Access denied");
+        // only the real children can get here
 
-        dump(msg.fromSeqno);dump("😑 handling hi from child");
+        dump(msg.fromSeqno);
+        dump("😑 handling hi from child");
     }
 }

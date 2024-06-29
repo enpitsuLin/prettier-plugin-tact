@@ -7,6 +7,7 @@ contract Constants with Deployable {
 
     // if your contract can be in multiple states, constants are an easy alternative to enums
 
+    init() {}
 
     get fun sum(): Int {
         // you can read the constants anywhere

@@ -2,30 +2,32 @@ import "@stdlib/deploy";
 
 // first contract
 contract Todo1 with Deployable {
-    seqno: Int as uint64;// the code specifies the index (sequence number)
+    seqno: Int as uint64 = 1;// the code specifies the index (sequence number)
 
+    init() {}
 
     get fun myAddress(): Address {
-        return ;
+        return myAddress();
     }
 
     get fun otherAddress(): Address {
         let init: StateInit = ;
-        return ;
+        return contractAddress(init);
     }
 }
 
 // second contract
 contract Todo2 with Deployable {
-    seqno: Int as uint64;// the code specifies the index (sequence number)
+    seqno: Int as uint64 = 2;// the code specifies the index (sequence number)
 
+    init() {}
 
     get fun myAddress(): Address {
-        return ;
+        return myAddress();
     }
 
     get fun otherAddress(): Address {
         let init: StateInit = ;
-        return ;
+        return contractAddress(init);
     }
 }
