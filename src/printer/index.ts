@@ -1,7 +1,7 @@
 import type { Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
-import { doesCommentBelongToNode, doesNodeBelongToNode, doesNodesInSameRow, formatComment, formatField, formatFunction, validatePrint } from './utils'
+import { doesCommentBelongToNode, doesNodesInSameRow, formatComment, formatField, formatFunction, validatePrint } from './utils'
 import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, group } = doc.builders
@@ -68,14 +68,38 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         hardline,
         '}',
       ]
-    case 'storage_variable':
+    case 'storage_variable': {
+      if (node.namedChildren.some(n => n.type === 'tlb_serialization')) {
+        return [
+          path.call(print, 'namedChildren', 0),
+          ': ',
+          path.call(print, 'namedChildren', 1),
+          path.call(print, 'namedChildren', 2),
+          ...node.namedChild(3)
+            ? [' = ', path.call(print, 'namedChildren', 3)]
+            : [],
+          ';',
+          ...node.nextNamedSibling
+          && !doesCommentBelongToNode(node.nextNamedSibling)
+            ? [hardline]
+            : [],
+        ]
+      }
+
       return [
         path.call(print, 'namedChildren', 0),
         ': ',
         path.call(print, 'namedChildren', 1),
-        path.call(print, 'namedChildren', 2),
+        ...node.namedChild(2)
+          ? [' = ', path.call(print, 'namedChildren', 2)]
+          : [],
         ';',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
       ]
+    }
     case 'receive_function':
       return group([
         'receive(',
@@ -87,7 +111,18 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           ? [hardline]
           : [],
       ])
-
+    case 'init_function':
+      return group([
+        'init',
+        join(' ', [
+          path.call(print, 'namedChildren', 0),
+          path.call(print, 'namedChildren', 1),
+        ]),
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
+      ])
     case 'storage_function':
     case 'global_function':
     case 'native_function':
@@ -148,7 +183,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'lvalue':
       return node.text
     case 'return_statement':
-      return ['return ', path.map(print, 'children'), ';']
+      return ['return ', path.map(print, 'namedChildren'), ';']
     case 'field_access_expression':
       return node.text
     case 'message': {
@@ -303,7 +338,14 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 1),
       ]
     case 'expression_statement':
-      return [node.text, ';']
+      return [
+        node.text,
+        ';',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [' '],
+      ]
     case 'method_call_expression':
     case 'binary_expression':
       // maybe not to use node.text for method_call_experssion and binary_expression
@@ -319,6 +361,19 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'boolean':
     case 'integer':
       return node.text
+    case 'static_call_expression':
+      return group([
+        path.call(print, 'namedChildren', 0),
+        path.call(print, 'namedChildren', 1),
+      ])
+    case 'argument_list':
+      return group([
+        '(',
+        join(', ', path.map(print, 'namedChildren')),
+        ')',
+      ])
+    case 'argument':
+      return path.map(print, 'namedChildren')
     default:
     // console.log(node)
   }
