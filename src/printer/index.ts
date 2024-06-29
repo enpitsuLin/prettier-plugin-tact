@@ -54,11 +54,12 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         hardline,
         '}',
       ]
+    case 'global_constant':
     case 'storage_variable':
     case 'storage_constant': {
       if (node.namedChildren.some(n => n.type === 'tlb_serialization')) {
         return [
-          ...node.type === 'storage_constant' ? ['const '] : [],
+          ...['storage_constant', 'global_constant'].includes(node.type) ? ['const '] : [],
           path.call(print, 'namedChildren', 0),
           ': ',
           path.call(print, 'namedChildren', 1),
@@ -75,7 +76,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
       }
 
       return [
-        ...node.type === 'storage_constant' ? ['const '] : [],
+        ...['storage_constant', 'global_constant'].includes(node.type) ? ['const '] : [],
         path.call(print, 'namedChildren', 0),
         ': ',
         path.call(print, 'namedChildren', 1),
@@ -432,8 +433,8 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 0),
       ])
     default:
-    // console.log(node, node.text)
-    // console.table(node.namedChildren.map(({ type, text }) => ({ type, text })))
+      // console.log(node, node.text)
+      // console.table(node.namedChildren.map(({ type, text }) => ({ type, text })))
   }
 
   return ''
