@@ -11,6 +11,7 @@ fun baz() {
 }
 
 fun customPow(a: Int, c: Int): Int {
+    let res: Int = 1;
     return res;
 }
 
@@ -35,10 +36,12 @@ contract Filter with FilterTrait {
 }
 
 extends fun customPow(self: Int, c: Int): Int {
+    let res: Int = 1;
     return res;
 }
 
 extends mutates fun customPow(self: Int, c: Int) {
+    let res: Int = 1;
     self = res;
 }
 

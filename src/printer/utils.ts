@@ -108,6 +108,16 @@ export function formatFunction(path: AstPath<SyntaxNode>, print: (path: AstPath<
   ])
 }
 
+export function doesNodesInSameRow(...nodes: SyntaxNode[]): boolean {
+  let row: number | null = null
+  return nodes.some(({ startPosition }) => {
+    if (row && startPosition.row === row)
+      return true
+    row = startPosition.row
+    return false
+  })
+}
+
 export function doesCommentBelongToNode(node: SyntaxNode): boolean {
   if (!node.previousNamedSibling || node.type !== 'comment')
     return false

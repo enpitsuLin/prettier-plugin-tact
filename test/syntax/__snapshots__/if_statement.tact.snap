@@ -1,14 +1,11 @@
 fun if_statement() {
-    if (true) {
-        // consequence, when condition is true
+    if (true) {// consequence, when condition is true
         dump((2 + 2));
     }
 
-    if ((2 + 2) == 4) {
-        // consequence, when condition is true
+    if ((2 + 2) == 4) {// consequence, when condition is true
         dump(true);
-    } else  {
-        // alternative, when condition is false
+    } else  {// alternative, when condition is false
         dump(false);
     }
 

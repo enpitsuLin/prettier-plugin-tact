@@ -1,7 +1,7 @@
 import type { Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
-import { doesCommentBelongToNode, formatComment, formatField, formatFunction, validatePrint } from './utils'
+import { doesCommentBelongToNode, doesNodeBelongToNode, doesNodesInSameRow, formatComment, formatField, formatFunction, validatePrint } from './utils'
 import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, group } = doc.builders
@@ -212,17 +212,51 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'else_clause':
       return path.map(print, 'namedChildren')
     case 'block_statement':
-      // console.log(node, node.namedChildren)
       return group([
         ' {',
-        indent([hardline, path.map(print, 'namedChildren')]),
+        indent([
+          ...(node.namedChild(0)
+          && doesNodesInSameRow(node.namedChild(0)!, node))
+            ? []
+            : [hardline],
+          path.map(print, 'namedChildren'),
+        ]),
         hardline,
         '}',
       ])
+    case 'let_statement':
+      return group([
+        'let ',
+        // identifier
+        path.call(print, 'namedChildren', 0),
+        ': ',
+        path.call(print, 'namedChildren', 1),
+        ' = ',
+        path.call(print, 'namedChildren', 2),
+        ';',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [' '],
+      ])
+    case 'try_statement':
+      return group([
+        'try',
+        path.call(print, 'namedChildren', 0),
+        ...node.namedChildCount > 1 ? [path.call(print, 'namedChildren', 1)] : [],
+      ])
+    case 'catch_clause':
+      return [
+        ' catch (',
+        path.call(print, 'namedChildren', 0),
+        ')',
+        path.call(print, 'namedChildren', 1),
+      ]
     case 'expression_statement':
       return [node.text, ';']
+    case 'method_call_expression':
     case 'binary_expression':
-      // maybe not to use node.text
+      // maybe not to use node.text for method_call_experssion and binary_expression
       return node.text
     case 'identifier':
     case 'type_identifier':
