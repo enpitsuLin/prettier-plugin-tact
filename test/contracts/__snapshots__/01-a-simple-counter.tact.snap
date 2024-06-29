@@ -7,7 +7,7 @@ contract Counter {
         self.val = 0;
     }
 
-    receive({})
+    receive() {}
 
     // handler for incoming increment messages that change the state
     receive("increment") {

@@ -8,11 +8,11 @@ contract ReceiveCoins with Deployable {
     }
 
     // receive empty messages, these are usually simple TON coin transfers to the contract
-    receive({
+    receive() {
         dump("empty message received");
         // revert the transaction if balance is growing over 3 TON
         require(myBalance() <= ton("3"), "Balance getting too high");
-    })
+    }
 
     receive("increment") {
         // print how much TON coin were sent with this message
