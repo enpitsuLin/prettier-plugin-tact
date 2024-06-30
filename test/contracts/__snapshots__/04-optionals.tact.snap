@@ -22,7 +22,7 @@ contract Optionals with Deployable {
         self.ca = a;
         self.cb = b;
         self.cc = c;
-        self.cd = StrctOpts { sa: null; sb: true; sc: null; };
+        self.cd = StrctOpts { sa: null, sb: true, sc: null, };
     }
 
     receive(msg: MsgOpts) {

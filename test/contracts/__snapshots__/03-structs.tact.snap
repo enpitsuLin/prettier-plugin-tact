@@ -19,13 +19,13 @@ contract Structs with Deployable {
     s2: Params;
 
     init() {
-        self.s1 = Point { x: 2; y: 3; };
-        self.s2 = Params { point: self.s1; };
+        self.s1 = Point { x: 2, y: 3, };
+        self.s2 = Params { point: self.s1, };
     }
 
     receive("show ops") {
         // temporary variable
-        let s: Point = Point { x: 4; y: 5; };
+        let s: Point = Point { x: 4, y: 5, };
 
         self.s1 = s;
     }

@@ -121,11 +121,11 @@ contract Jetton with Ownable {
     get fun get_jetton_data(): JettonData {
         let code: Cell = self.getJettonWalletInit(myAddress()).code;
         return JettonData {
-            totalSupply: self.totalSupply;
-            mintable: self.mintable;
-            owner: self.owner;
-            content: self.content;
-            walletCode: code;
+            totalSupply: self.totalSupply,
+            mintable: self.mintable,
+            owner: self.owner,
+            content: self.content,
+            walletCode: code,
         };
     }
 
@@ -276,10 +276,10 @@ contract JettonDefaultWallet {
 
     get fun get_wallet_data(): JettonWalletData {
         return JettonWalletData {
-            balance: self.balance;
-            owner: self.owner;
-            master: self.master;
-            walletCode: (initOf JettonDefaultWallet(self.master, self.owner)).code;
+            balance: self.balance,
+            owner: self.owner,
+            master: self.master,
+            walletCode: (initOf JettonDefaultWallet(self.master, self.owner)).code,
         };
     }
 }

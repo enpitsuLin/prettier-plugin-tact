@@ -383,6 +383,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'argument':
       return path.map(print, 'namedChildren')
     case 'instance_expression':
+
       return group([
         path.call(print, 'namedChildren', 0),
         ' ',
@@ -399,7 +400,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         '}',
       ])
     case 'instance_argument':
-      return [node.text, ';']
+      return [node.text, ',']
     case 'initOf':
       return group([
         'initOf ',

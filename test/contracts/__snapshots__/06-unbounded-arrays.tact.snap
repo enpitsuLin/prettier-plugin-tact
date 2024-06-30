@@ -101,8 +101,8 @@ contract TodoChild {
 
     get fun details(): TodoDetails {
         return TodoDetails {
-            task: self.task;
-            completed: self.completed;
+            task: self.task,
+            completed: self.completed,
         };
     }
 }
