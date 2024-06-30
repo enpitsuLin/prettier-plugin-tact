@@ -335,6 +335,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         path.call(print, 'namedChildren', 0),
         ': ',
         path.call(print, 'namedChildren', 1),
+        node.children.some(n => n.type === '?') ? '?' : '',
         ' = ',
         path.call(print, 'namedChildren', 2),
         ';',
