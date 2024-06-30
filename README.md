@@ -1,5 +1,11 @@
 # prettier-plugin-tact
 
+<div align="center">
+
+<img src="https://github.com/enpitsuLin/prettier-plugin-tact/assets/29378026/74ceef5b-9e6d-4241-bd95-8f06c38f124a" width="128" height="128">
+
+</div>
+
 A [prettier plugin](https://prettier.io/docs/en/plugins.html) for automatically formatting your [tact](https://github.com/tact-lang/tact) code.
 
 ## Installation
