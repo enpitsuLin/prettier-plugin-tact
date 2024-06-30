@@ -2,7 +2,11 @@
 
 <div align="center">
 
-<img src="https://github.com/enpitsuLin/prettier-plugin-tact/assets/29378026/74ceef5b-9e6d-4241-bd95-8f06c38f124a" width="128" height="128">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/enpitsuLin/prettier-plugin-tact/assets/29378026/29ddc4da-fcae-448b-a446-b908af811c58">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/enpitsuLin/prettier-plugin-tact/assets/29378026/4e39e5a6-31d5-43c2-aea0-1b5b90d9bf74">
+  <img src="https://github.com/enpitsuLin/prettier-plugin-tact/assets/29378026/4e39e5a6-31d5-43c2-aea0-1b5b90d9bf74" alt="LOGO" style="width:auto;">
+</picture>
 
 </div>
 
