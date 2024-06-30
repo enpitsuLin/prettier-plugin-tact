@@ -4,6 +4,21 @@ import prettier from 'prettier'
 import { describe, expect, it } from 'vitest'
 import * as tactPlugin from '../src/index'
 
+async function runFormat(filepath: string) {
+  const code = fs.readFileSync(filepath, 'utf8').replace(/\r\n/g, '\n')
+
+  return prettier.format(
+    code,
+    {
+      plugins: [
+        tactPlugin,
+      ],
+      printWidth: 80,
+      filepath,
+    },
+  )
+}
+
 export function run(dirname: string) {
   describe(dirname, () => {
     const contracts = fs.readdirSync(dirname)
@@ -20,19 +35,12 @@ export function run(dirname: string) {
     contracts.forEach((filename) => {
       it(filename, async () => {
         const filepath = `${dirname}/${filename}`
-        const code = fs.readFileSync(filepath, 'utf8').replace(/\r\n/g, '\n')
-
-        const result = await prettier.format(
-          code,
-          {
-            plugins: [
-              tactPlugin,
-            ],
-            printWidth: 80,
-            filepath,
-          },
-        )
+        const result = await runFormat(filepath)
         expect(result).toMatchFileSnapshot(getSnapshotPath(dirname, filename))
+
+        expect(() => {
+          runFormat(filepath)
+        }).not.toThrowError()
       })
     })
   })
