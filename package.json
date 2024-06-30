@@ -1,11 +1,20 @@
 {
   "name": "prettier-plugin-tact",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Prettier plugin for tact-lang",
   "author": "enpitsulin <enpitsulin@gmail>",
   "license": "MIT",
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enpitsuLin/prettier-plugin-tact"
+  },
+  "keywords": [
+    "prettier",
+    "plugin",
+    "tact",
+    "ton"
+  ],
   "exports": {
     ".": {
       "import": "./lib/index.js",
