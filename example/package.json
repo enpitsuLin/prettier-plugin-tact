@@ -5,6 +5,7 @@
     "start": "blueprint run",
     "build": "blueprint build",
     "test": "jest --verbose",
+    "prettier": "prettier",
     "format": "prettier --write --plugin=prettier-plugin-tact \"contracts/**/*.tact\""
   },
   "devDependencies": {

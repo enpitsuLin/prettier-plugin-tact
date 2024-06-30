@@ -2,30 +2,44 @@
 
 A [prettier plugin](https://prettier.io/docs/en/plugins.html) for automatically formatting your [tact](https://github.com/tact-lang/tact) code.
 
-## Installation and usage
+## Installation
 
 Install both `prettier` and `prettier-plugin-tact`:
 
 ```Bash
 npm install --save-dev prettier prettier-plugin-tact
+// or by pnpm
+pnpm add -D prettier prettier-plugin-tact
 ```
 
-Run prettier in your contracts:
+### Activate the plugin
+
+Create or modify your [prettier configuration file](https://prettier.io/docs/en/configuration) to activate the plugin:
+
+```json
+{
+  "plugins": ["prettier-plugin-tact"]
+}
+```
+
+## Usage
+
+### If you installed prettier as a local dependency, you can add prettier as a script in your package.json,
+
+```json
+{
+  "scripts": {
+    "prettier": "prettier"
+  }
+}
+```
+
+Run prettier for your contracts files by command or you can add this to you script if you prefer:
 
 ```Bash
-npx prettier --write --plugin=prettier-plugin-tact 'contracts/**/*.tact'
-```
-
-You can add a script for running prettier on all your contracts:
-
-```
-"prettier": "prettier --write --plugin=prettier-plugin-tact 'contracts/**/*.sol'"
-```
-
-Or you can use it as part of your linting to check that all your code is prettified:
-
-```
-"lint": "prettier --list-different --plugin=prettier-plugin-tact 'contracts/**/*.sol'"
+npm run prettier -- path/to/file.tact --write
+# or
+pnpm prettier path/to/file.tact --write
 ```
 
 > Prettier only works with valid code. If there is a syntax error, nothing will be done and a parser error will be thrown.
