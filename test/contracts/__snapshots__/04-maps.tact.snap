@@ -84,5 +84,7 @@ contract Maps with Deployable {
     }
 
     // you can return maps from getters
-    get fun allItems() map<Address, TokenInfo>
+    get fun allItems(): map<Address, TokenInfo> {
+        return self.ma1;
+    }
 }

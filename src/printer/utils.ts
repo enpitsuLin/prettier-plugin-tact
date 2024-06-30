@@ -64,7 +64,8 @@ export function formatFunction(path: AstPath<SyntaxNode>, print: (path: AstPath<
   const hasFunAttributes = node.namedChildren.some(n => n.type === 'function_attributes')
 
   if (!isNativeFunction) {
-    const hasReturnType = node.namedChild(hasFunAttributes ? 3 : 2)?.type === 'type_identifier'
+    const maybeReturnTypeNode = node.namedChildren.find(n => n.type === 'parameter_list')
+    const hasReturnType = maybeReturnTypeNode?.nextNamedSibling && maybeReturnTypeNode?.nextNamedSibling.type !== 'function_body'
     const hasFunBody = node.namedChildren.some(n => n.type === 'function_body')
 
     const attributes = hasFunAttributes ? [path.call(print, 'namedChildren', 0)] : []
@@ -72,6 +73,7 @@ export function formatFunction(path: AstPath<SyntaxNode>, print: (path: AstPath<
     const parameterList = path.call(print, 'namedChildren', hasFunAttributes ? 2 : 1)
     const returnType = path.call(print, 'namedChildren', hasFunAttributes ? 3 : 2)
     const body = path.call(print, 'namedChildren', hasFunAttributes ? hasReturnType ? 4 : 3 : hasReturnType ? 3 : 2)
+
     return group([
       hasFunAttributes ? [attributes, ' '] : [],
       'fun ',
