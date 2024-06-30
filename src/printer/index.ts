@@ -328,14 +328,15 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         hardline,
         '}',
       ])
-    case 'let_statement':
+    case 'let_statement': {
+      const isOptional = node.children.find(n => n.type === 'type_identifier')?.nextSibling?.type === '?'
       return group([
         'let ',
         // identifier
         path.call(print, 'namedChildren', 0),
         ': ',
         path.call(print, 'namedChildren', 1),
-        node.children.some(n => n.type === '?') ? '?' : '',
+        isOptional ? '?' : '',
         ' = ',
         path.call(print, 'namedChildren', 2),
         ';',
@@ -344,6 +345,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
           ? [hardline]
           : [' '],
       ])
+    }
     case 'try_statement':
       return group([
         'try',
