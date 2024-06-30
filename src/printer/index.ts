@@ -1,7 +1,7 @@
 import type { Printer } from 'prettier'
 import { doc } from 'prettier'
 import type { SyntaxNode } from 'tree-sitter'
-import { doesCommentBelongToNode, doesNodesInSameRow, formatComment, formatContract, formatField, formatFunction, validatePrint } from './utils'
+import { doesCommentBelongToNode, doesNodesInSameRow, formatComment, formatContract, formatField, formatFunction } from './utils'
 import { withNodesSeparator, withNullNodeHandler, withPreservedEmptyLines } from './wrapper'
 
 const { hardline, join, indent, group } = doc.builders

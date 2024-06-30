@@ -8,13 +8,13 @@
   "keywords": [],
   "exports": {
     ".": {
-      "import": "./lib/index.mjs",
+      "import": "./lib/index.js",
       "require": "./lib/index.js"
     },
     "./package.json": "./package.json"
   },
   "main": "lib/index.js",
-  "module": "lib/index.mjs",
+  "module": "lib/index.js",
   "files": [
     "lib"
   ],
