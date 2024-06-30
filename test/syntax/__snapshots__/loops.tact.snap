@@ -19,7 +19,7 @@ fun loops() {
     }
      {
         // Empty map
-        let cells: map<Int, Int> = emptyMap();
+        let cells: map<Int, Cell> = emptyMap();
 
         // Setting four entries
         cells.set(1, beginCell().storeUint(100, 16).endCell());

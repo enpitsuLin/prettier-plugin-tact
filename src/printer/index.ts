@@ -416,7 +416,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         'map<',
         path.call(print, 'namedChildren', 0),
         ', ',
-        path.call(print, 'namedChildren', 0),
+        path.call(print, 'namedChildren', 1),
         '>',
       ])
     case 'unary_expression':

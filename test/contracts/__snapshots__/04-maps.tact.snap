@@ -6,23 +6,23 @@ struct TokenInfo {
 }
 // messages can contain maps
 message Replace {
-    items: map<Int, Int>;
+    items: map<Int, Address>;
 }
 
 contract Maps with Deployable {
     // maps with Int as key
-    mi1: map<Int, Int>;
-    mi2: map<Int, Int>;
+    mi1: map<Int, TokenInfo>;
+    mi2: map<Int, Bool>;
     mi3: map<Int, Int>;
-    mi4: map<Int, Int>;
+    mi4: map<Int, Address>;
 
     // maps with Address as key
-    ma1: map<Address, Address>;
-    ma2: map<Address, Address>;
-    ma3: map<Address, Address>;
+    ma1: map<Address, TokenInfo>;
+    ma2: map<Address, Bool>;
+    ma3: map<Address, Int>;
     ma4: map<Address, Address>;
 
-    init(arg: map<Int, Int>) {
+    init(arg: map<Int, Bool>) {
         // no need to initialize maps if they're empty
         self.mi2 = arg;
     }
@@ -84,5 +84,5 @@ contract Maps with Deployable {
     }
 
     // you can return maps from getters
-    get fun allItems() map<Address, Address>
+    get fun allItems() map<Address, TokenInfo>
 }
