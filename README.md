@@ -34,7 +34,7 @@ Create or modify your [prettier configuration file](https://prettier.io/docs/en/
 
 ## Usage
 
-### If you installed prettier as a local dependency, you can add prettier as a script in your package.json,
+If you installed prettier as a local dependency, you can add prettier as a script in your package.json,
 
 ```json
 {
