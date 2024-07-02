@@ -1,9 +1,9 @@
 {
   "name": "prettier-plugin-tact",
   "type": "module",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Prettier plugin for tact-lang",
-  "author": "enpitsulin <enpitsulin@gmail>",
+  "author": "enpitsulin <enpitsulin@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
