@@ -5,6 +5,7 @@ struct StrctOpts {
     sb: Bool?;
     sc: Address?;
 }
+
 message MsgOpts {
     ma: Int?;
     mb: Bool?;

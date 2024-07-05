@@ -4,11 +4,13 @@ struct Point {
     x: Int as int64;
     y: Int as int64;
 }
+
 struct Params {
     name: String = "Satoshi"; // default value
     age: Int? = null; // optional field
     point: Point; // nested structs
 }
+
 message Add {
     point: Point; // message can hold a struct
 }

@@ -4,6 +4,7 @@ struct TokenInfo {
     ticker: String;
     decimals: Int as uint8;
 }
+
 // this is a global static function that can be called from anywhere
 fun average(a: Int, b: Int): Int {
     return (a + b) / 2;

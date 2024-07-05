@@ -4,6 +4,7 @@ struct TokenInfo {
     ticker: String;
     decimals: Int;
 }
+
 // messages can contain maps
 message Replace {
     items: map<Int, Address>;

@@ -50,6 +50,7 @@ struct JettonData {
     content: Cell;
     walletCode: Cell;
 }
+
 // ============================================================================================================ //
 @interface("org.ton.jetton.master")
 trait Jetton with Ownable {
@@ -290,6 +291,7 @@ struct JettonWalletData {
     master: Address;
     walletCode: Cell;
 }
+
 message(0xf8a7ea5) TokenTransfer {
     queryId: Int as uint64;
     amount: Int as coins;

@@ -4,6 +4,7 @@ struct Metadata {
     symbol: String;
     totalSupply: Int;
 }
+
 message Transfer {
     amount: Int as coins;
     to: Address;

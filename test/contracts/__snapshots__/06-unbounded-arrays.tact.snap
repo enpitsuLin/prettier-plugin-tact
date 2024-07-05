@@ -73,6 +73,7 @@ struct TodoDetails {
     task: String;
     completed: Bool;
 }
+
 contract TodoChild {
     parent: Address;
     seqno: Int as uint256;
