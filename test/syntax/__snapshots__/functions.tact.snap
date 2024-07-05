@@ -18,7 +18,7 @@ fun customPow(a: Int, c: Int): Int {
     return res;
 }
 
-contract FilterTrait with Ownable {
+trait FilterTrait with Ownable {
     // Virtual functions can be overridden by users of this trait
     virtual fun filterMessage(): Bool {
         return sender() != self.owner;

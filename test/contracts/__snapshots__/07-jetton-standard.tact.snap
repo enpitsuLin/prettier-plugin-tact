@@ -52,7 +52,7 @@ struct JettonData {
 }
 // ============================================================================================================ //
 @interface("org.ton.jetton.master")
-contract Jetton with Ownable {
+trait Jetton with Ownable {
     totalSupply: Int;// Already set initially
     mintable: Bool;
     owner: Address;

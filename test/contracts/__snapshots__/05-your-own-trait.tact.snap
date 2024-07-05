@@ -4,7 +4,7 @@ import "@stdlib/ownable";
 /////////////////////////////////////////////////////////////////////////////
 // this trait adds basic analytics to any contract to track how popular it is
 
-contract Trackable with Ownable {
+trait Trackable with Ownable {
      // your new trait may rely on other traits
 
     // Storage
