@@ -119,7 +119,7 @@ export function formatContract(path: AstPath<SyntaxNode>, print: (path: AstPath<
 
   return group([
     attributesIndex !== -1 ? [path.call(print, 'namedChildren', attributesIndex)] : [],
-    'contract ',
+    node.type === 'contract' ? 'contract ' : 'trait ',
     identityIndex !== -1 ? [path.call(print, 'namedChildren', identityIndex), ' '] : [],
     traitIndex !== -1 ? [path.call(print, 'namedChildren', traitIndex), ' '] : [],
     // contract_body
