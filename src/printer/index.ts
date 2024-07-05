@@ -240,6 +240,10 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         indent([hardline, path.call(print, 'namedChildren', 1)]),
         hardline,
         '}',
+        ...node.nextNamedSibling
+        && !doesCommentBelongToNode(node.nextNamedSibling)
+          ? [hardline]
+          : [],
       ])
     case 'struct_body':
       if (node.namedChildCount === 0)
