@@ -324,7 +324,7 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
         ' {',
         indent([
           ...(node.namedChild(0)
-          && doesNodesInSameRow(node.namedChild(0)!, node))
+            && doesNodesInSameRow(node.namedChild(0)!, node))
             ? []
             : [hardline],
           path.map(print, 'namedChildren'),
@@ -436,6 +436,14 @@ const printTact: Printer<SyntaxNode>['print'] = (path, _options, print) => {
     case 'binary_expression':
       // maybe not to use node.text for method_call_experssion and binary_expression
       return node.text
+    case 'ternary_expression':
+      return group([
+        path.call(print, 'namedChildren', 0),
+        ' ? ',
+        path.call(print, 'namedChildren', 1),
+        ' : ',
+        path.call(print, 'namedChildren', 2),
+      ])
     case 'identifier':
     case 'type_identifier':
     case 'self':
